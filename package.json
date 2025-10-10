@@ -1,14 +1,15 @@
 {
   "name": "blkout-blog",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "BLKOUT Voices - Standalone blog application with working backend",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": ["blog", "blkout", "liberation", "community"],
+  "author": "BLKOUT Community",
+  "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.75.0",
     "body-parser": "^2.2.0",
