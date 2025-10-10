@@ -20,13 +20,27 @@
 
     .header {
       background: linear-gradient(135deg, #6b21a8 0%, #000000 50%, #6b21a8 100%);
-      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
-      padding: 3rem 1rem;
+      border-bottom: 2px solid #ffd700;
+      padding: 2rem 1rem;
       text-align: center;
+      position: relative;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .header-logo img {
+      height: 4rem;
+      width: auto;
     }
 
     .header h1 {
-      font-size: 4rem;
+      font-size: 3rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -36,10 +50,23 @@
     }
 
     .header p {
-      font-size: 1.25rem;
-      color: #c0c0c0;
+      font-size: 1.125rem;
+      color: #e5e5e5;
       max-width: 800px;
       margin: 0 auto;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .header-logo img {
+        height: 3rem;
+      }
+      .header h1 {
+        font-size: 2rem;
+      }
+      .header p {
+        font-size: 1rem;
+      }
     }
 
     .container {
@@ -231,6 +258,9 @@
 </head>
 <body>
   <div class="header">
+    <div class="header-logo">
+      <img src="/blkout-logo.png" alt="BLKOUT">
+    </div>
     <h1>BLKOUT VOICES</h1>
     <p>Liberation narratives, views, perspectives and new writing from our community</p>
   </div>
