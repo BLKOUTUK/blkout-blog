@@ -2,7 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+
+// Only load .env in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -13,10 +17,16 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // Supabase client with service role key
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Missing Supabase credentials!');
+  console.error('SUPABASE_URL:', supabaseUrl ? 'SET' : 'MISSING');
+  console.error('SUPABASE_SERVICE_ROLE_KEY:', supabaseKey ? 'SET' : 'MISSING');
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Helper function to generate slug
 function generateSlug(title) {
