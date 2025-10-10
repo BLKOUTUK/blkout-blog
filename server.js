@@ -64,8 +64,31 @@ app.get('/api/articles/:slug', async (req, res) => {
   }
 });
 
+// Admin authentication
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD || 'blkout2024';
+
+    if (password === adminPassword) {
+      res.json({ success: true, message: 'Authenticated' });
+    } else {
+      res.status(401).json({ success: false, error: 'Invalid password' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Create new article (admin)
 app.post('/api/articles', async (req, res) => {
+  // Check admin password
+  const adminPassword = process.env.ADMIN_PASSWORD || 'blkout2024';
+  const providedPassword = req.headers['x-admin-password'];
+
+  if (providedPassword !== adminPassword) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
   try {
     const {
       title,
@@ -130,6 +153,14 @@ app.post('/api/articles', async (req, res) => {
 
 // Update article
 app.put('/api/articles/:id', async (req, res) => {
+  // Check admin password
+  const adminPassword = process.env.ADMIN_PASSWORD || 'blkout2024';
+  const providedPassword = req.headers['x-admin-password'];
+
+  if (providedPassword !== adminPassword) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
+
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -155,6 +186,14 @@ app.put('/api/articles/:id', async (req, res) => {
 
 // Delete article
 app.delete('/api/articles/:id', async (req, res) => {
+  // Check admin password
+  const adminPassword = process.env.ADMIN_PASSWORD || 'blkout2024';
+  const providedPassword = req.headers['x-admin-password'];
+
+  if (providedPassword !== adminPassword) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
+
   try {
     const { id } = req.params;
 

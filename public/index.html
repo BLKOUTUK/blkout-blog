@@ -247,6 +247,7 @@
     // State management
     let currentView = 'list';
     let currentArticle = null;
+    let isAdmin = sessionStorage.getItem('adminAuth') === 'true';
 
     // Show message
     function showMessage(message, type = 'success') {
@@ -258,11 +259,32 @@
       setTimeout(() => alert.remove(), 5000);
     }
 
-    // Render admin form
-    function renderAdminForm() {
+    // Render login form
+    function renderLoginForm() {
       return `
         <div class="admin-section">
-          <h2>Create New Article</h2>
+          <h2>Admin Login</h2>
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="adminPassword">Admin Password</label>
+              <input type="password" id="adminPassword" required placeholder="Enter admin password">
+            </div>
+            <button type="submit" class="btn">Login</button>
+          </form>
+        </div>
+      `;
+    }
+
+    // Render admin form
+    function renderAdminForm() {
+      if (!isAdmin) return renderLoginForm();
+
+      return `
+        <div class="admin-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2>Create New Article</h2>
+            <button class="btn back-btn" onclick="logout()" style="margin: 0;">Logout</button>
+          </div>
           <form id="articleForm">
             <div class="form-group">
               <label for="title">Title *</label>
@@ -370,8 +392,56 @@
       content += await renderArticlesList();
       app.innerHTML = content;
 
-      // Attach form handler
-      document.getElementById('articleForm').addEventListener('submit', handleSubmit);
+      // Attach form handlers
+      if (isAdmin) {
+        document.getElementById('articleForm').addEventListener('submit', handleSubmit);
+      } else {
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+      }
+    }
+
+    // Handle login
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.btn');
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+
+      try {
+        const password = document.getElementById('adminPassword').value;
+
+        const response = await fetch(`${API_URL}/api/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          sessionStorage.setItem('adminAuth', 'true');
+          sessionStorage.setItem('adminPassword', password);
+          isAdmin = true;
+          showMessage('Login successful!');
+          await renderApp();
+        } else {
+          throw new Error('Invalid password');
+        }
+      } catch (error) {
+        showMessage(error.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    }
+
+    // Logout
+    function logout() {
+      sessionStorage.removeItem('adminAuth');
+      sessionStorage.removeItem('adminPassword');
+      isAdmin = false;
+      showMessage('Logged out successfully');
+      renderApp();
     }
 
     // Handle form submission
@@ -399,7 +469,10 @@
 
         const response = await fetch(`${API_URL}/api/articles`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': sessionStorage.getItem('adminPassword')
+          },
           body: JSON.stringify(articleData)
         });
 

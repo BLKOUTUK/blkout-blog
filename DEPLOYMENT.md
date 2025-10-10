@@ -20,8 +20,11 @@ Click on your service → **Variables** tab → Add these variables:
 ```bash
 SUPABASE_URL=https://lgqknkshpsxtfzqaewfv.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxncWtua3NocHN4dGZ6cWFld2Z2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcyNzQ0NzQzOSwiZXhwIjoyMDQzMDIzNDM5fQ.8LYD0kN7_rG0m9vXQGxhN5mNYP8FZvQ5vhFzXKqYE8I
+ADMIN_PASSWORD=blkout2024
 PORT=3001
 ```
+
+**Note**: The `ADMIN_PASSWORD` protects article creation, editing, and deletion. Change this to a strong password in production.
 
 ### 4. Deploy
 Railway will:
