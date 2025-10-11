@@ -10,6 +10,9 @@
   "keywords": ["blog", "blkout", "liberation", "community"],
   "author": "BLKOUT Community",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.75.0",
     "body-parser": "^2.2.0",
