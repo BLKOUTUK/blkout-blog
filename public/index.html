@@ -18,38 +18,91 @@
       line-height: 1.7;
     }
 
-    /* Header */
+    /* Video Hero Header */
     .header {
-      background: linear-gradient(135deg, #6b21a8 0%, #000000 50%, #6b21a8 100%);
+      position: relative;
+      height: 70vh;
+      min-height: 500px;
+      max-height: 800px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-bottom: 3px solid #ffd700;
-      padding: 2rem 1.5rem;
+    }
+
+    .header-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .header-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 10, 10, 0.5) 0%, rgba(10, 10, 10, 0.8) 100%);
+      z-index: 1;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
       text-align: center;
+      padding: 2rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .header-logo img {
-      height: 6rem;
+      height: 8rem;
       width: auto;
-      margin-bottom: 1.5rem;
-      filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.3));
+      margin-bottom: 2rem;
+      filter: drop-shadow(0 4px 16px rgba(255, 215, 0, 0.5));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
 
     .header h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-size: clamp(3rem, 8vw, 6rem);
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.15em;
       -webkit-text-stroke: 2px #fff;
       color: transparent;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
     }
 
     .header p {
-      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-size: clamp(1.125rem, 2.5vw, 1.75rem);
       color: #e5e5e5;
       max-width: 900px;
       margin: 0 auto;
       font-weight: 500;
       line-height: 1.6;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        height: 60vh;
+        min-height: 400px;
+      }
+
+      .header-logo img {
+        height: 5rem;
+      }
     }
 
     /* Navigation */
@@ -627,11 +680,17 @@
 </head>
 <body>
   <div class="header">
-    <div class="header-logo">
-      <img src="/blkoutlogo-white-transparent.png" alt="BLKOUT">
+    <video class="header-video" autoplay loop muted playsinline>
+      <source src="/videos/hero-voices.mp4" type="video/mp4">
+    </video>
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <div class="header-logo">
+        <img src="/blkoutlogo-white-transparent.png" alt="BLKOUT">
+      </div>
+      <h1>BLKOUT VOICES</h1>
+      <p>Liberation narratives, views, perspectives and new writing from our community</p>
     </div>
-    <h1>BLKOUT VOICES</h1>
-    <p>Liberation narratives, views, perspectives and new writing from our community</p>
   </div>
 
   <nav class="nav-bar">
