@@ -15,79 +15,480 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background-color: #0a0a0a;
       color: #e5e5e5;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
+    /* Header */
     .header {
       background: linear-gradient(135deg, #6b21a8 0%, #000000 50%, #6b21a8 100%);
-      border-bottom: 2px solid #ffd700;
-      padding: 2rem 1rem;
+      border-bottom: 3px solid #ffd700;
+      padding: 2rem 1.5rem;
       text-align: center;
-      position: relative;
-    }
-
-    .header-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
     }
 
     .header-logo img {
-      height: 4rem;
+      height: 3rem;
       width: auto;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.3));
     }
 
     .header h1 {
-      font-size: 3rem;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.15em;
       -webkit-text-stroke: 2px #fff;
       color: transparent;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
     }
 
     .header p {
-      font-size: 1.125rem;
+      font-size: clamp(1rem, 2vw, 1.25rem);
       color: #e5e5e5;
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       font-weight: 500;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-brand:hover {
+      opacity: 0.8;
+    }
+
+    .nav-brand img {
+      height: 2rem;
+      width: auto;
+    }
+
+    .nav-brand-text {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffd700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      padding: 0.625rem 1.25rem;
+      color: #e5e5e5;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: rgba(255, 215, 0, 0.3);
+      color: #ffd700;
+    }
+
+    .nav-link.active {
+      background: rgba(255, 215, 0, 0.15);
+      border-color: rgba(255, 215, 0, 0.5);
+      color: #ffd700;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: #ffd700;
+      font-size: 1.75rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    @media (max-width: 968px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 10, 0.98);
+        flex-direction: column;
+        border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 1.5rem;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Featured Hero Article */
+    .featured-hero {
+      position: relative;
+      height: 600px;
+      margin: 3rem 0;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .featured-hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 10, 10, 0.3) 0%, rgba(10, 10, 10, 0.9) 100%),
+                  url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNmIyMWE4O3N0b3Atb3BhY2l0eTowLjMiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwMDA7c3RvcC1vcGFjaXR5OjAuOSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPjwvc3ZnPg==');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .featured-hero-content {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 3rem;
+      max-width: 1000px;
+    }
+
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      border-radius: 999px;
+      color: #ffd700;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      width: fit-content;
+      margin-bottom: 1.5rem;
+    }
+
+    .featured-hero h2 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 900;
+      color: #ffd700;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .featured-hero-excerpt {
+      font-size: clamp(1.125rem, 2vw, 1.5rem);
+      color: #e5e5e5;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      max-width: 800px;
+    }
+
+    .featured-hero-meta {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 1rem;
+      color: rgba(229, 229, 229, 0.8);
+      margin-bottom: 1.5rem;
+    }
+
+    .read-article-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: #ffd700;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.125rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: fit-content;
+      text-decoration: none;
+    }
+
+    .read-article-btn:hover {
+      background: #ffed4e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
+    }
+
+    /* Article Grid - Vox Style */
+    .articles-section {
+      padding: 3rem 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffd700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 3rem;
     }
 
     @media (max-width: 768px) {
-      .header-logo img {
-        height: 3rem;
+      .articles-grid {
+        grid-template-columns: 1fr;
       }
-      .header h1 {
-        font-size: 2rem;
-      }
-      .header p {
-        font-size: 1rem;
+
+      .featured-hero {
+        height: 500px;
       }
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
+    .article-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
     }
 
-    .admin-section {
+    .article-card:hover {
+      border-color: #ffd700;
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(255, 215, 0, 0.2);
       background: rgba(255, 255, 255, 0.05);
+    }
+
+    .article-card-image {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, #6b21a8 0%, #000000 100%);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .article-card-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #ffd700;
+    }
+
+    .article-card-content {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article-card-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffd700;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .article-card-excerpt {
+      font-size: 1rem;
+      color: #c0c0c0;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .article-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+      color: rgba(229, 229, 229, 0.6);
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .article-card-author {
+      font-weight: 600;
+      color: #e5e5e5;
+    }
+
+    /* Single Article View */
+    .article-view-wrapper {
+      max-width: 900px;
+      margin: 3rem auto;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: #e5e5e5;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 2rem;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ffd700;
+      transform: translateX(-4px);
+    }
+
+    .article-view {
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 215, 0, 0.2);
-      border-radius: 12px;
-      padding: 2rem;
+      border-radius: 16px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .article-view-header {
       margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .article-view-meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .article-view h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      color: #ffd700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-view-author {
+      font-size: 1.125rem;
+      color: rgba(229, 229, 229, 0.8);
+      font-weight: 600;
+    }
+
+    .article-view-content {
+      color: #e5e5e5;
+      font-size: 1.125rem;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+
+    .article-view-content p {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Admin Section */
+    .admin-section {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin: 3rem 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .admin-section h2 {
       color: #ffd700;
-      margin-bottom: 1.5rem;
-      font-size: 1.75rem;
+      margin-bottom: 2rem;
+      font-size: 2rem;
       font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .form-group {
@@ -99,24 +500,27 @@
       margin-bottom: 0.5rem;
       color: #e5e5e5;
       font-weight: 600;
+      font-size: 0.95rem;
     }
 
     .form-group input,
     .form-group textarea,
     .form-group select {
       width: 100%;
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.1);
+      padding: 0.875rem;
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
       color: #e5e5e5;
       font-size: 1rem;
       font-family: inherit;
+      transition: all 0.3s;
     }
 
     .form-group textarea {
-      min-height: 200px;
+      min-height: 250px;
       resize: vertical;
+      line-height: 1.6;
     }
 
     .form-group input:focus,
@@ -124,6 +528,8 @@
     .form-group select:focus {
       outline: none;
       border-color: #ffd700;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
     }
 
     .btn {
@@ -136,74 +542,28 @@
       font-weight: 700;
       cursor: pointer;
       transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .btn:hover {
       background: #ffed4e;
       transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
     }
 
     .btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      transform: none;
     }
 
-    .articles-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .article-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
-
-    .article-card:hover {
-      border-color: #ffd700;
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.2);
-    }
-
-    .article-card h3 {
-      color: #ffd700;
-      margin-bottom: 0.75rem;
-      font-size: 1.5rem;
-    }
-
-    .article-meta {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      font-size: 0.875rem;
-      color: #999;
-    }
-
-    .article-excerpt {
-      color: #c0c0c0;
-      line-height: 1.6;
-    }
-
-    .category-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: rgba(107, 33, 168, 0.3);
-      border: 1px solid rgba(107, 33, 168, 0.5);
-      border-radius: 999px;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
+    /* Alerts */
     .alert {
-      padding: 1rem;
+      padding: 1rem 1.5rem;
       border-radius: 8px;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
     }
 
     .alert-success {
@@ -218,41 +578,50 @@
       color: #f87171;
     }
 
-    .article-view {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 215, 0, 0.2);
-      border-radius: 12px;
-      padding: 3rem;
-      margin-bottom: 2rem;
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: #999;
+      font-size: 1.125rem;
     }
 
-    .article-view h1 {
-      color: #ffd700;
-      font-size: 3rem;
+    .loading-spinner {
+      display: inline-block;
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(255, 215, 0, 0.2);
+      border-top-color: #ffd700;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
       margin-bottom: 1rem;
     }
 
-    .article-view .content {
-      color: #e5e5e5;
-      font-size: 1.125rem;
-      line-height: 1.8;
-      white-space: pre-wrap;
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
-    .back-btn {
-      background: rgba(255, 255, 255, 0.1);
-      color: #e5e5e5;
-      margin-bottom: 2rem;
-    }
-
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .loading {
+    /* Empty State */
+    .empty-state {
       text-align: center;
-      padding: 4rem;
-      color: #999;
+      padding: 5rem 2rem;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 1.75rem;
+      color: #e5e5e5;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      font-size: 1.125rem;
+      color: rgba(229, 229, 229, 0.6);
     }
   </style>
 </head>
@@ -265,19 +634,92 @@
     <p>Liberation narratives, views, perspectives and new writing from our community</p>
   </div>
 
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <div class="nav-brand" onclick="navigateHome()">
+        <img src="/blkout-logo.png" alt="BLKOUT">
+        <span class="nav-brand-text">Voices</span>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <div class="nav-link active" data-filter="all" onclick="filterByCategory('all')">All</div>
+        <div class="nav-link" data-filter="opinion" onclick="filterByCategory('opinion')">Opinion</div>
+        <div class="nav-link" data-filter="analysis" onclick="filterByCategory('analysis')">Analysis</div>
+        <div class="nav-link" data-filter="editorial" onclick="filterByCategory('editorial')">Editorial</div>
+        <div class="nav-link" data-filter="community" onclick="filterByCategory('community')">Community</div>
+        <div class="nav-link" data-filter="liberation" onclick="filterByCategory('liberation')">Liberation</div>
+        <div class="nav-link" onclick="toggleAdmin()">Admin</div>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        ☰
+      </button>
+    </div>
+  </nav>
+
   <div class="container">
     <div id="app">
-      <!-- Content will be loaded here -->
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading voices...</p>
+      </div>
     </div>
   </div>
 
   <script>
     const API_URL = window.location.origin;
-
-    // State management
     let currentView = 'list';
     let currentArticle = null;
+    let allArticles = [];
     let isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+    let currentFilter = 'all';
+    let showAdminPanel = false;
+
+    // Navigation functions
+    function toggleMobileMenu() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('active');
+    }
+
+    function navigateHome() {
+      currentFilter = 'all';
+      showAdminPanel = false;
+      updateNavActive('all');
+      showList();
+      if (window.innerWidth <= 968) {
+        document.getElementById('navLinks').classList.remove('active');
+      }
+    }
+
+    function filterByCategory(category) {
+      currentFilter = category;
+      showAdminPanel = false;
+      updateNavActive(category);
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.innerWidth <= 968) {
+        document.getElementById('navLinks').classList.remove('active');
+      }
+    }
+
+    function toggleAdmin() {
+      showAdminPanel = !showAdminPanel;
+      updateNavActive('admin');
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.innerWidth <= 968) {
+        document.getElementById('navLinks').classList.remove('active');
+      }
+    }
+
+    function updateNavActive(filter) {
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-filter') === filter ||
+            (filter === 'admin' && link.textContent === 'Admin')) {
+          link.classList.add('active');
+        }
+      });
+    }
 
     // Show message
     function showMessage(message, type = 'success') {
@@ -287,6 +729,19 @@
       alert.textContent = message;
       app.insertBefore(alert, app.firstChild);
       setTimeout(() => alert.remove(), 5000);
+    }
+
+    // Generate fallback gradient for article images
+    function getArticleGradient(index) {
+      const gradients = [
+        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+        'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+        'linear-gradient(135deg, #6b21a8 0%, #000000 100%)'
+      ];
+      return gradients[index % gradients.length];
     }
 
     // Render login form
@@ -311,19 +766,19 @@
 
       return `
         <div class="admin-section">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <h2>Create New Article</h2>
             <button class="btn back-btn" onclick="logout()" style="margin: 0;">Logout</button>
           </div>
           <form id="articleForm">
             <div class="form-group">
               <label for="title">Title *</label>
-              <input type="text" id="title" required>
+              <input type="text" id="title" required placeholder="Enter article title">
             </div>
 
             <div class="form-group">
               <label for="author">Author *</label>
-              <input type="text" id="author" required>
+              <input type="text" id="author" required placeholder="Enter author name">
             </div>
 
             <div class="form-group">
@@ -338,13 +793,13 @@
             </div>
 
             <div class="form-group">
-              <label for="excerpt">Excerpt</label>
-              <textarea id="excerpt" rows="3"></textarea>
+              <label for="excerpt">Excerpt (preview text)</label>
+              <textarea id="excerpt" rows="3" placeholder="Brief summary or hook for your article"></textarea>
             </div>
 
             <div class="form-group">
               <label for="content">Content *</label>
-              <textarea id="content" required></textarea>
+              <textarea id="content" required placeholder="Write your article content here..."></textarea>
             </div>
 
             <div class="form-group">
@@ -358,44 +813,112 @@
       `;
     }
 
-    // Render articles list
-    async function renderArticlesList() {
-      const response = await fetch(`${API_URL}/api/articles`);
-      const { data: articles } = await response.json();
+    // Render featured hero article
+    function renderFeaturedHero(article, index) {
+      if (!article) return '';
 
       return `
-        <div class="articles-grid">
-          ${articles.map(article => `
-            <div class="article-card" onclick="viewArticle('${article.slug}')">
-              <div class="article-meta">
-                <span class="category-badge">${article.category}</span>
-                <span>${new Date(article.published_at).toLocaleDateString()}</span>
-              </div>
-              <h3>${article.title}</h3>
-              <p class="article-meta">By ${article.author}</p>
-              <p class="article-excerpt">${article.excerpt}</p>
+        <div class="featured-hero" onclick="viewArticle('${article.slug}')">
+          <div class="featured-hero-bg" style="background: ${getArticleGradient(index)}"></div>
+          <div class="featured-hero-content">
+            <span class="featured-badge">
+              ⭐ Featured • ${article.category.toUpperCase()}
+            </span>
+            <h2>${article.title}</h2>
+            <p class="featured-hero-excerpt">${article.excerpt || article.content.substring(0, 200) + '...'}</p>
+            <div class="featured-hero-meta">
+              <span>By ${article.author}</span>
+              <span>•</span>
+              <span>${new Date(article.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
             </div>
-          `).join('')}
+            <button class="read-article-btn" onclick="event.stopPropagation(); viewArticle('${article.slug}')">
+              Read Article →
+            </button>
+          </div>
         </div>
       `;
     }
 
-    // Render single article
+    // Render articles grid
+    async function renderArticlesList() {
+      const response = await fetch(`${API_URL}/api/articles`);
+      const { data: articles } = await response.json();
+      allArticles = articles || [];
+
+      // Filter articles by category
+      let filteredArticles = allArticles;
+      if (currentFilter !== 'all') {
+        filteredArticles = allArticles.filter(a => a.category === currentFilter);
+      }
+
+      if (filteredArticles.length === 0) {
+        const categoryName = currentFilter === 'all' ? '' : ` in ${currentFilter.charAt(0).toUpperCase() + currentFilter.slice(1)}`;
+        return `
+          <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <h3>No Articles${categoryName}</h3>
+            <p>${currentFilter === 'all' ? 'Be the first to share your voice with the community.' : 'No articles in this category yet.'}</p>
+          </div>
+        `;
+      }
+
+      const featuredArticle = filteredArticles.find(a => a.featured) || filteredArticles[0];
+      const otherArticles = filteredArticles.filter(a => a.id !== featuredArticle.id);
+
+      const categoryTitle = currentFilter === 'all' ? 'Latest Articles' :
+                            `${currentFilter.charAt(0).toUpperCase() + currentFilter.slice(1)} Articles`;
+
+      return `
+        ${renderFeaturedHero(featuredArticle, 0)}
+
+        <div class="articles-section">
+          <div class="section-header">
+            <h2>${categoryTitle}</h2>
+            <span style="color: rgba(229, 229, 229, 0.6); font-size: 1rem;">${filteredArticles.length} ${filteredArticles.length === 1 ? 'article' : 'articles'}</span>
+          </div>
+
+          <div class="articles-grid">
+            ${otherArticles.map((article, index) => `
+              <div class="article-card" onclick="viewArticle('${article.slug}')">
+                <div class="article-card-image" style="background: ${getArticleGradient(index + 1)}">
+                  <span class="article-card-badge">${article.category}</span>
+                </div>
+                <div class="article-card-content">
+                  <h3 class="article-card-title">${article.title}</h3>
+                  <p class="article-card-excerpt">${article.excerpt || article.content.substring(0, 150) + '...'}</p>
+                  <div class="article-card-meta">
+                    <span class="article-card-author">${article.author}</span>
+                    <span>${new Date(article.published_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Render single article view
     async function renderArticleView(slug) {
       const response = await fetch(`${API_URL}/api/articles/${slug}`);
       const { data: article } = await response.json();
       currentArticle = article;
 
       return `
-        <button class="btn back-btn" onclick="showList()">← Back to Articles</button>
-        <div class="article-view">
-          <div class="article-meta">
-            <span class="category-badge">${article.category}</span>
-            <span>${new Date(article.published_at).toLocaleDateString()}</span>
+        <div class="article-view-wrapper">
+          <button class="btn back-btn" onclick="showList()">← Back to Articles</button>
+          <div class="article-view">
+            <div class="article-view-header">
+              <div class="article-view-meta">
+                <span class="article-card-badge">${article.category}</span>
+                <span style="color: rgba(229, 229, 229, 0.6);">•</span>
+                <span>${new Date(article.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+              <h1>${article.title}</h1>
+              <p class="article-view-author">By ${article.author}</p>
+            </div>
+            <div class="article-view-content">${article.content}</div>
           </div>
-          <h1>${article.title}</h1>
-          <p class="article-meta" style="font-size: 1.125rem; margin-bottom: 2rem;">By ${article.author}</p>
-          <div class="content">${article.content}</div>
         </div>
       `;
     }
@@ -403,30 +926,43 @@
     // View article
     async function viewArticle(slug) {
       currentView = 'article';
-      document.getElementById('app').innerHTML = '<div class="loading">Loading...</div>';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('app').innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading article...</p></div>';
       document.getElementById('app').innerHTML = await renderArticleView(slug);
     }
 
     // Show list
     async function showList() {
       currentView = 'list';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       await renderApp();
     }
 
     // Render app
     async function renderApp() {
       const app = document.getElementById('app');
-      app.innerHTML = '<div class="loading">Loading...</div>';
+      app.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading voices...</p></div>';
 
-      let content = renderAdminForm();
+      let content = '';
+
+      // Show admin panel if toggled
+      if (showAdminPanel) {
+        content = renderAdminForm();
+      }
+
+      // Always show articles list
       content += await renderArticlesList();
       app.innerHTML = content;
 
       // Attach form handlers
-      if (isAdmin) {
-        document.getElementById('articleForm').addEventListener('submit', handleSubmit);
-      } else {
-        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+      if (showAdminPanel) {
+        if (isAdmin) {
+          const form = document.getElementById('articleForm');
+          if (form) form.addEventListener('submit', handleSubmit);
+        } else {
+          const form = document.getElementById('loginForm');
+          if (form) form.addEventListener('submit', handleLogin);
+        }
       }
     }
 
@@ -439,7 +975,6 @@
 
       try {
         const password = document.getElementById('adminPassword').value;
-
         const response = await fetch(`${API_URL}/api/admin/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -511,6 +1046,7 @@
         if (result.success) {
           showMessage('Article published successfully!');
           e.target.reset();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           await renderApp();
         } else {
           throw new Error(result.error);
