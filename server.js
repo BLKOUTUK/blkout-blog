@@ -105,6 +105,7 @@ app.post('/api/articles', async (req, res) => {
       content,
       excerpt,
       author,
+      author_bio,
       category,
       tags = [],
       featured = false,
@@ -131,6 +132,7 @@ app.post('/api/articles', async (req, res) => {
       content,
       excerpt: articleExcerpt,
       author,
+      author_bio: author_bio || '',
       category,
       slug,
       published,
@@ -220,6 +222,112 @@ app.delete('/api/articles/:id', async (req, res) => {
     });
   } catch (error) {
     console.error('Error deleting article:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Submit article pitch (public)
+app.post('/api/pitches', async (req, res) => {
+  try {
+    const {
+      title,
+      pitch,
+      author_name,
+      author_email,
+      author_bio,
+      category
+    } = req.body;
+
+    // Validate required fields
+    if (!title || !pitch || !author_name || !author_email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: title, pitch, author_name, author_email'
+      });
+    }
+
+    const pitchData = {
+      title,
+      pitch,
+      author_name,
+      author_email,
+      author_bio: author_bio || '',
+      category: category || 'opinion',
+      status: 'pending',
+      submitted_at: new Date().toISOString()
+    };
+
+    const { data, error } = await supabase
+      .from('voices_pitches')
+      .insert([pitchData])
+      .select();
+
+    if (error) throw error;
+
+    res.json({
+      success: true,
+      message: 'Pitch submitted successfully! We\'ll review it and get back to you.',
+      data: data[0]
+    });
+  } catch (error) {
+    console.error('Error submitting pitch:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get all pitches (admin)
+app.get('/api/pitches', async (req, res) => {
+  // Check admin password
+  const adminPassword = process.env.ADMIN_PASSWORD || 'blkout2024';
+  const providedPassword = req.headers['x-admin-password'];
+
+  if (providedPassword !== adminPassword) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('voices_pitches')
+      .select('*')
+      .order('submitted_at', { ascending: false });
+
+    if (error) throw error;
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Error fetching pitches:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Update pitch status (admin)
+app.put('/api/pitches/:id', async (req, res) => {
+  // Check admin password
+  const adminPassword = process.env.ADMIN_PASSWORD || 'blkout2024';
+  const providedPassword = req.headers['x-admin-password'];
+
+  if (providedPassword !== adminPassword) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
+
+  try {
+    const { id } = req.params;
+    const { status, admin_notes } = req.body;
+
+    const { data, error } = await supabase
+      .from('voices_pitches')
+      .update({ status, admin_notes, reviewed_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+
+    if (error) throw error;
+
+    res.json({
+      success: true,
+      message: 'Pitch updated successfully',
+      data: data[0]
+    });
+  } catch (error) {
+    console.error('Error updating pitch:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
