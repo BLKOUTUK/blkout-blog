@@ -676,6 +676,141 @@
       font-size: 1.125rem;
       color: rgba(229, 229, 229, 0.6);
     }
+
+    /* Footer */
+    .footer {
+      background: #000;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 3rem 1.5rem;
+      margin-top: 5rem;
+    }
+
+    .footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-section h3,
+    .footer-section h4 {
+      color: #ffd700;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-section h3 {
+      font-size: 1.125rem;
+    }
+
+    .footer-section h4 {
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .footer-section p {
+      color: rgba(229, 229, 229, 0.7);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-links a,
+    .footer-links button {
+      color: rgba(229, 229, 229, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.3s;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .footer-links a:hover,
+    .footer-links button:hover {
+      color: #ffd700;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-social a {
+      color: rgba(229, 229, 229, 0.7);
+      transition: color 0.3s;
+      font-size: 1.25rem;
+    }
+
+    .footer-social a:hover {
+      color: #ffd700;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-bottom p {
+      color: rgba(229, 229, 229, 0.5);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-bottom-links a {
+      color: rgba(229, 229, 229, 0.5);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.3s;
+    }
+
+    .footer-bottom-links a:hover {
+      color: #ffd700;
+    }
+
+    .footer-heart {
+      color: #ef4444;
+      display: inline-block;
+      margin: 0 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
   </style>
 </head>
 <body>
@@ -723,6 +858,76 @@
       </div>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <!-- About -->
+        <div class="footer-section">
+          <h3>BLKOUT Voices</h3>
+          <p>
+            Liberation narratives, views, perspectives and new writing from our community.
+            A platform for Black queer voices to be heard, celebrated, and amplified.
+          </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="https://blkout.vercel.app">Main Platform</a></li>
+            <li><a href="https://blkout.vercel.app/about">About Us</a></li>
+            <li><a href="https://blkout.vercel.app/governance">Governance</a></li>
+            <li><a href="https://news-blkout.vercel.app">Newsroom</a></li>
+            <li><a href="https://events-blkout.vercel.app">What's On</a></li>
+          </ul>
+        </div>
+
+        <!-- Resources -->
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul class="footer-links">
+            <li><button onclick="toggleAdmin()">Submit an Article</button></li>
+            <li><a href="https://blkout.vercel.app">Writing Guidelines</a></li>
+            <li><a href="https://blkout.vercel.app">Community Standards</a></li>
+            <li><a href="https://blkout.vercel.app">Support Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Connect -->
+        <div class="footer-section">
+          <h4>Connect</h4>
+          <div class="footer-social">
+            <a href="https://twitter.com/blkoutuk" aria-label="Twitter" target="_blank" rel="noopener noreferrer">𝕏</a>
+            <a href="https://instagram.com/blkoutuk" aria-label="Instagram" target="_blank" rel="noopener noreferrer">IG</a>
+            <a href="mailto:voices@blkout.uk" aria-label="Email">✉</a>
+          </div>
+          <p>voices@blkout.uk</p>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <p>
+          Made with <span class="footer-heart">♥</span> by the BLKOUT Community
+        </p>
+        <div class="footer-bottom-links">
+          <a href="https://blkout.vercel.app">Privacy</a>
+          <a href="https://blkout.vercel.app">Terms</a>
+          <a href="https://blkout.vercel.app">Accessibility</a>
+        </div>
+        <p>
+          © <span id="currentYear"></span> BLKOUT. Liberation through technology.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Set current year
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+  </script>
 
   <script>
     const API_URL = window.location.origin;
