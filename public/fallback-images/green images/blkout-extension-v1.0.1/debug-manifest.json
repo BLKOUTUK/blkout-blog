@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "BLKOUT Debug Extension",
+  "version": "1.0.1",
+  "description": "Debug version - Submit events and stories to BLKOUT platform with detailed logging",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "https://blkout-website.vercel.app/*",
+    "https://blkout-beta.vercel.app/*",
+    "https://*.theguardian.com/*",
+    "https://*.bbc.co.uk/*", 
+    "https://*.bbc.com/*",
+    "https://*.independent.co.uk/*",
+    "https://*.twitter.com/*",
+    "https://*.x.com/*",
+    "https://*.eventbrite.com/*",
+    "https://*.facebook.com/*",
+    "https://*.meetup.com/*",
+    "<all_urls>"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "action": {
+    "default_popup": "debug-popup.html",
+    "default_title": "BLKOUT Debug Submission",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  }
+}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLKOUT Extension - Bulk Import Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .event-item, .article-item { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px;
+        }
+        .event-item { background-color: #f0f8ff; }
+        .article-item { background-color: #f5f5f5; }
+        button { 
+            margin: 10px 5px; 
+            padding: 8px 15px; 
+            background: #000; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer;
+        }
+        button:hover { background: #333; }
+        .results { margin-top: 20px; padding: 15px; background: #e8f5e8; }
+    </style>
+</head>
+<body>
+    <h1>Bulk Import Test - Multiple Events & Articles</h1>
+    <p>This page contains multiple events and articles to test bulk submission capabilities.</p>
+    
+    <div class="controls">
+        <button onclick="simulateBulkSubmission()">🚀 Simulate Bulk Submission</button>
+        <button onclick="testExtensionAPI()">🔧 Test API Connection</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+    
+    <!-- Multiple Events -->
+    <div class="event-item">
+        <h2>Community Healing Workshop</h2>
+        <div class="event-info">
+            <p><strong>Date:</strong> March 15, 2025</p>
+            <p><strong>Time:</strong> 14:00 - 17:00</p>
+            <p><strong>Location:</strong> Brixton Community Center</p>
+        </div>
+        <p>Trauma-informed healing workshop for community members affected by systemic oppression.</p>
+    </div>
+    
+    <div class="event-item">
+        <h2>Digital Security Training</h2>
+        <div class="event-info">
+            <p><strong>Date:</strong> March 22, 2025</p>
+            <p><strong>Time:</strong> 18:30 - 21:00</p>
+            <p><strong>Location:</strong> Online & Southwark Hub</p>
+        </div>
+        <p>Learn essential digital security practices for activists and community organizers.</p>
+    </div>
+    
+    <div class="event-item">
+        <h2>Community Land Trust Forum</h2>
+        <div class="event-info">
+            <p><strong>Date:</strong> April 5, 2025</p>
+            <p><strong>Time:</strong> 10:00 - 16:00</p>
+            <p><strong>Location:</strong> Hackney Downs Community Centre</p>
+        </div>
+        <p>Exploring community ownership models for housing and land justice.</p>
+    </div>
+    
+    <!-- Multiple Articles -->
+    <div class="article-item">
+        <h2>Police Accountability Campaign Gains Support</h2>
+        <p><strong>Author:</strong> Community Reporter</p>
+        <p>Local grassroots organizations unite to demand independent oversight of police conduct, with over 500 residents signing petition for civilian review board...</p>
+    </div>
+    
+    <div class="article-item">
+        <h2>Youth Climate Justice Initiative Launched</h2>
+        <p><strong>Author:</strong> Environmental Justice Network</p>
+        <p>Young activists from marginalized communities lead new climate campaign focusing on environmental racism and community resilience...</p>
+    </div>
+    
+    <div class="article-item">
+        <h2>Community Mutual Aid Network Expands</h2>
+        <p><strong>Author:</strong> Solidarity Network</p>
+        <p>Neighborhood mutual aid groups establish coordinated response system for community emergencies and ongoing support needs...</p>
+    </div>
+    
+    <div class="article-item">
+        <h2>Housing Justice Victory: Evictions Blocked</h2>
+        <p><strong>Author:</strong> Tenant Organizer</p>
+        <p>Community organizing success as collective action prevents displacement of 12 families from social housing in South London...</p>
+    </div>
+    
+    <div id="results" class="results" style="display: none;">
+        <h3>Submission Results</h3>
+        <div id="result-content"></div>
+    </div>
+    
+    <script>
+        async function simulateBulkSubmission() {
+            const events = document.querySelectorAll('.event-item');
+            const articles = document.querySelectorAll('.article-item');
+            
+            let submissions = 0;
+            let successful = 0;
+            
+            const results = document.getElementById('results');
+            const content = document.getElementById('result-content');
+            results.style.display = 'block';
+            content.innerHTML = '<p>🔄 Starting bulk submission...</p>';
+            
+            // Submit events
+            for (let event of events) {
+                const title = event.querySelector('h2').textContent;
+                const description = event.querySelector('p').textContent;
+                
+                submissions++;
+                
+                try {
+                    const response = await fetch('https://blkout-beta.vercel.app/api/events', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title,
+                            description,
+                            date: '2025-03-15',
+                            time: '18:00',
+                            organizer: 'Community Submitted',
+                            category: 'Community',
+                            location: { type: 'physical', address: 'Community Center' },
+                            capacity: 50,
+                            status: 'draft',
+                            sourceUrl: window.location.href,
+                            submittedVia: 'bulk-test'
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        successful++;
+                        content.innerHTML += `<p>✅ Event: ${title.substring(0, 30)}...</p>`;
+                    } else {
+                        content.innerHTML += `<p>❌ Event failed: ${title.substring(0, 30)}...</p>`;
+                    }
+                } catch (error) {
+                    content.innerHTML += `<p>❌ Event error: ${title.substring(0, 30)}...</p>`;
+                }
+                
+                // Small delay to avoid overwhelming API
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // Submit articles
+            for (let article of articles) {
+                const title = article.querySelector('h2').textContent;
+                const description = article.querySelector('p:last-of-type').textContent;
+                const author = article.querySelector('p strong')?.parentElement?.textContent || 'Community Submitted';
+                
+                submissions++;
+                
+                try {
+                    const response = await fetch('https://blkout-beta.vercel.app/api/articles', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title,
+                            description,
+                            author: author.replace('Author:', '').trim(),
+                            category: 'community-response',
+                            type: 'community-response',
+                            priority: 'medium',
+                            status: 'draft',
+                            sourceUrl: window.location.href,
+                            submittedVia: 'bulk-test'
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        successful++;
+                        content.innerHTML += `<p>✅ Article: ${title.substring(0, 30)}...</p>`;
+                    } else {
+                        content.innerHTML += `<p>❌ Article failed: ${title.substring(0, 30)}...</p>`;
+                    }
+                } catch (error) {
+                    content.innerHTML += `<p>❌ Article error: ${title.substring(0, 30)}...</p>`;
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            content.innerHTML += `<h4>📊 Summary: ${successful}/${submissions} successful submissions</h4>`;
+        }
+        
+        async function testExtensionAPI() {
+            const results = document.getElementById('results');
+            const content = document.getElementById('result-content');
+            results.style.display = 'block';
+            
+            try {
+                const response = await fetch('https://blkout-beta.vercel.app/api/events');
+                const data = await response.json();
+                
+                content.innerHTML = `
+                    <h4>🔧 API Connection Test</h4>
+                    <p>✅ Connection successful!</p>
+                    <p>📊 Current events in database: ${data.total || data.events?.length || 0}</p>
+                    <p>🔗 API URL: ${response.url}</p>
+                `;
+            } catch (error) {
+                content.innerHTML = `
+                    <h4>🔧 API Connection Test</h4>
+                    <p>❌ Connection failed: ${error.message}</p>
+                `;
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('result-content').innerHTML = '';
+        }
+        
+        console.log('Bulk import test page loaded - ready for extension testing');
+    </script>
+</body>
+</html>

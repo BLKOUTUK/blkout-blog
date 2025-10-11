@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Extension Content Detection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { color: green; } .error { color: red; } .info { color: blue; }
+        button { padding: 10px; margin: 5px; }
+        pre { background: #f5f5f5; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>Chrome Extension Content Detection Diagnostic</h1>
+    
+    <div class="test-section">
+        <h3>Test 1: Basic Permissions</h3>
+        <button onclick="testPermissions()">Test Extension Permissions</button>
+        <div id="permissions-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 2: Content Script Injection</h3>
+        <button onclick="testContentScript()">Test Content Script Injection</button>
+        <div id="content-script-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 3: Page Content Detection</h3>
+        <button onclick="testContentDetection()">Test Content Detection</button>
+        <div id="content-detection-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 4: API Connection</h3>
+        <button onclick="testAPI()">Test API Connection</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <script>
+        async function testPermissions() {
+            const result = document.getElementById('permissions-result');
+            result.innerHTML = '<div class="info">Testing permissions...</div>';
+            
+            try {
+                // Test if we can query tabs
+                const tabs = await chrome.tabs.query({active: true, currentWindow: true});
+                if (tabs && tabs.length > 0) {
+                    result.innerHTML = `<div class="success">✅ Tab access: OK</div>
+                                       <div class="info">Current tab: ${tabs[0].url}</div>`;
+                } else {
+                    result.innerHTML = '<div class="error">❌ Cannot access current tab</div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Permission error: ${error.message}</div>`;
+            }
+        }
+        
+        async function testContentScript() {
+            const result = document.getElementById('content-script-result');
+            result.innerHTML = '<div class="info">Testing content script injection...</div>';
+            
+            try {
+                const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+                
+                const results = await chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    func: () => {
+                        return {
+                            url: window.location.href,
+                            hostname: window.location.hostname,
+                            title: document.title,
+                            hasH1: !!document.querySelector('h1'),
+                            h1Text: document.querySelector('h1')?.textContent?.substring(0, 100),
+                            bodyLength: document.body?.textContent?.length || 0
+                        };
+                    }
+                });
+                
+                if (results && results[0] && results[0].result) {
+                    const data = results[0].result;
+                    result.innerHTML = `<div class="success">✅ Content script injection: OK</div>
+                                       <pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    result.innerHTML = '<div class="error">❌ Content script returned no data</div>';
+                }
+                
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Content script injection failed: ${error.message}</div>`;
+            }
+        }
+        
+        async function testContentDetection() {
+            const result = document.getElementById('content-detection-result');
+            result.innerHTML = '<div class="info">Testing content detection logic...</div>';
+            
+            try {
+                const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+                
+                const results = await chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    func: () => {
+                        // Simplified detection logic
+                        const url = window.location.href;
+                        const hostname = window.location.hostname;
+                        const title = document.querySelector('h1')?.textContent?.trim() || document.title?.trim();
+                        
+                        console.log('Detection test - URL:', url);
+                        console.log('Detection test - Hostname:', hostname);
+                        console.log('Detection test - Title:', title);
+                        
+                        // Test Guardian detection
+                        if (hostname.includes('theguardian.com')) {
+                            const headline = document.querySelector('h1[data-gu-name="headline"]')?.textContent?.trim() ||
+                                           document.querySelector('.content__headline')?.textContent?.trim() ||
+                                           document.querySelector('h1')?.textContent?.trim();
+                            
+                            const standfirst = document.querySelector('[data-gu-name="standfirst"]')?.textContent?.trim();
+                            const content = document.querySelector('[data-gu-name="body"]')?.textContent?.trim();
+                            
+                            return {
+                                detected: true,
+                                platform: 'guardian',
+                                headline,
+                                standfirst: standfirst?.substring(0, 100),
+                                contentLength: content?.length || 0,
+                                selectors: {
+                                    headline: !!document.querySelector('h1[data-gu-name="headline"]'),
+                                    contentHeadline: !!document.querySelector('.content__headline'),
+                                    standfirst: !!document.querySelector('[data-gu-name="standfirst"]'),
+                                    body: !!document.querySelector('[data-gu-name="body"]')
+                                }
+                            };
+                        }
+                        
+                        // Test BBC detection
+                        if (hostname.includes('bbc.co.uk') || hostname.includes('bbc.com')) {
+                            const headline = document.querySelector('h1[data-testid="headline"]')?.textContent?.trim() ||
+                                           document.querySelector('[data-component="headline"]')?.textContent?.trim() ||
+                                           document.querySelector('h1')?.textContent?.trim();
+                            
+                            const content = document.querySelector('[data-component="text-block"]')?.textContent?.trim();
+                            
+                            return {
+                                detected: true,
+                                platform: 'bbc',
+                                headline,
+                                contentLength: content?.length || 0,
+                                selectors: {
+                                    testidHeadline: !!document.querySelector('h1[data-testid="headline"]'),
+                                    componentHeadline: !!document.querySelector('[data-component="headline"]'),
+                                    textBlock: !!document.querySelector('[data-component="text-block"]')
+                                }
+                            };
+                        }
+                        
+                        // Generic detection
+                        const content = document.querySelector('article')?.textContent?.trim() ||
+                                       document.querySelector('main')?.textContent?.trim() ||
+                                       document.body?.textContent?.trim();
+                        
+                        return {
+                            detected: false,
+                            platform: 'generic',
+                            title,
+                            contentLength: content?.length || 0,
+                            selectors: {
+                                article: !!document.querySelector('article'),
+                                main: !!document.querySelector('main'),
+                                h1: !!document.querySelector('h1')
+                            }
+                        };
+                    }
+                });
+                
+                if (results && results[0] && results[0].result) {
+                    const data = results[0].result;
+                    result.innerHTML = `<div class="${data.detected ? 'success' : 'error'}">
+                                         ${data.detected ? '✅' : '❌'} Content detection: ${data.detected ? 'DETECTED' : 'FAILED'}
+                                       </div>
+                                       <pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    result.innerHTML = '<div class="error">❌ Content detection script failed</div>';
+                }
+                
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Content detection error: ${error.message}</div>`;
+            }
+        }
+        
+        async function testAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '<div class="info">Testing API connection...</div>';
+            
+            try {
+                const response = await fetch('https://blkout-beta.vercel.app/api/articles');
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.innerHTML = `<div class="success">✅ API connection: OK</div>
+                                       <div class="info">Articles in database: ${data.total}</div>`;
+                } else {
+                    result.innerHTML = `<div class="error">❌ API returned error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ API connection failed: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

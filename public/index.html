@@ -996,6 +996,36 @@
       setTimeout(() => alert.remove(), 5000);
     }
 
+    // Category-based image mapping
+    const categoryImages = {
+      'editorial': [
+        '/fallback-images/red images/tumblr_19cdf90e403a0faab7bf83cf434dabdf_49f4609e_640.jpg',
+        '/fallback-images/red images/tumblr_5d9a2ccc0fa2a56133c0501cacc46adf_6a189059_1280.jpg'
+      ],
+      'community': [
+        '/fallback-images/gold images/tumblr_0426429a4a43a64e644ffaea906af64f_965dcf96_1280.jpg',
+        '/fallback-images/gold images/tumblr_13e9c17df1839c98ff6ac1e1d597d85e_450a48de_1280.jpg',
+        '/fallback-images/gold images/tumblr_1a0f924dc738fc40cef878489094f2d4_8441c000_1280.jpg'
+      ],
+      'liberation': [
+        '/fallback-images/blue images/blue man.jpg',
+        '/fallback-images/blue images/tumblr_16174aad10948dae01218ba8e82dd990_1ec97cae_1280.jpg'
+      ],
+      'analysis': [
+        '/fallback-images/green images/tumblr_5b1b6534f4a738ceb37e212fb4433518_cf767bfe_1280.jpg'
+      ],
+      'opinion': [
+        '/fallback-images/gold images/tumblr_0426429a4a43a64e644ffaea906af64f_965dcf96_1280.jpg'
+      ]
+    };
+
+    // Get category-based image with fallback gradient
+    function getCategoryImage(category, index = 0) {
+      const images = categoryImages[category] || categoryImages['community'];
+      const imageUrl = images[index % images.length];
+      return `url('${imageUrl}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%)`;
+    }
+
     // Generate fallback gradient for article images
     function getArticleGradient(index) {
       const gradients = [
@@ -1084,7 +1114,7 @@
 
       return `
         <div class="featured-hero" onclick="viewArticle('${article.slug}')">
-          <div class="featured-hero-bg" style="background: ${getArticleGradient(index)}"></div>
+          <div class="featured-hero-bg" style="background: ${getCategoryImage(article.category, index)}; background-size: cover; background-position: center;"></div>
           <div class="featured-hero-content">
             <span class="featured-badge">
               ⭐ Featured • ${article.category.toUpperCase()}
@@ -1145,7 +1175,7 @@
           <div class="articles-grid">
             ${otherArticles.map((article, index) => `
               <div class="article-card" onclick="viewArticle('${article.slug}')">
-                <div class="article-card-image" style="background: ${getArticleGradient(index + 1)}">
+                <div class="article-card-image" style="background: ${getCategoryImage(article.category, index)}; background-size: cover; background-position: center;">
                   <span class="article-card-badge">${article.category}</span>
                 </div>
                 <div class="article-card-content">

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 400px;
+      min-height: 300px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      margin: 0;
+      background: #f8f9fa;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: #2c3e50;
+      color: white;
+      border-radius: 8px;
+    }
+    
+    .test-section {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .test-result {
+      font-family: monospace;
+      background: #f1f3f4;
+      padding: 8px;
+      border-radius: 4px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      font-size: 12px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    
+    .status-pass { color: #0f7b0f; }
+    .status-fail { color: #d73027; }
+    .status-info { color: #1565c0; }
+    
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      margin: 4px;
+    }
+    
+    button:hover {
+      background: #45a049;
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h3>🔧 BLKOUT Extension Diagnostics</h3>
+    <p>Testing content detection capabilities</p>
+  </div>
+  
+  <div class="test-section">
+    <h4>📍 Current Page Info</h4>
+    <div id="page-info" class="test-result">Loading...</div>
+  </div>
+  
+  <div class="test-section">
+    <h4>🔧 Script Injection Test</h4>
+    <button id="test-injection">Run Injection Test</button>
+    <div id="injection-result" class="test-result">Click button to test</div>
+  </div>
+  
+  <div class="test-section">
+    <h4>🔍 Content Detection Test</h4>
+    <button id="test-detection">Run Detection Test</button>
+    <div id="detection-result" class="test-result">Click button to test</div>
+  </div>
+  
+  <div class="test-section">
+    <h4>🎯 Selector Test (Guardian/BBC)</h4>
+    <button id="test-selectors">Test News Site Selectors</button>
+    <div id="selector-result" class="test-result">Click button to test</div>
+  </div>
+  
+  <div class="test-section">
+    <h4>📋 Instructions</h4>
+    <div class="test-result">
+1. Open browser Developer Tools (F12)
+2. Go to Console tab  
+3. Visit a Guardian or BBC article
+4. Run each test and check console output
+5. Report results back to development team
+    </div>
+  </div>
+  
+  <script src="diagnostic-popup.js"></script>
+</body>
+</html>

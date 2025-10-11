@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Testing - News Platform Simulation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 30px 0; padding: 20px; border: 1px solid #ccc; }
+        .guardian { background-color: #f6f6f6; }
+        .bbc { background-color: #fff5f5; }
+        .independent { background-color: #f0f8ff; }
+        .twitter { background-color: #f0f8ff; }
+    </style>
+</head>
+<body>
+    <h1>BLKOUT Extension - News Platform Testing</h1>
+    <p>This page simulates different news platforms to test the extension's detection capabilities.</p>
+    
+    <!-- Guardian Simulation -->
+    <div class="test-section guardian">
+        <h2>Guardian-style Article</h2>
+        <h1 data-gu-name="headline">Police accountability campaign launches following community complaints</h1>
+        <div data-gu-name="standfirst">
+            New initiative aims to establish independent oversight body for police misconduct in London boroughs
+        </div>
+        <div data-gu-name="author">Community Reporter</div>
+        <div data-gu-name="body">
+            A grassroots campaign for police accountability has gained significant momentum in London, with community organizations across multiple boroughs joining forces to demand independent oversight of police conduct. The campaign, which emerged from months of community meetings and documented complaints, seeks to establish a civilian review board with real investigative powers. Local residents have documented numerous instances of misconduct, discrimination, and excessive force, particularly in communities of color. The proposed oversight body would operate independently from existing police structures and include community representatives, legal advocates, and affected families.
+        </div>
+    </div>
+    
+    <!-- BBC Simulation -->
+    <div class="test-section bbc">
+        <h2>BBC-style Article</h2>
+        <h1 data-testid="headline">Community groups challenge housing development plans</h1>
+        <div data-component="text-block">
+            Residents and community organizations are mobilizing against proposed luxury housing developments that threaten to displace long-term tenants in South London. The development plans, which would replace affordable housing with luxury apartments, have sparked widespread community resistance. Local groups argue that the developments represent a continuation of systematic displacement of working-class and Black communities from areas they have inhabited for decades. Community meetings have drawn hundreds of residents who are organizing both legal challenges and direct action responses to protect their neighborhoods.
+        </div>
+    </div>
+    
+    <!-- Independent Simulation -->
+    <div class="test-section independent">
+        <h2>Independent-style Article</h2>
+        <h1>Youth-led climate justice movement gains traction in UK</h1>
+        <div data-testid="author-name">Environmental Justice Reporter</div>
+        <article>
+            Young climate activists across the UK are shifting their focus toward climate justice, emphasizing how environmental degradation disproportionately affects marginalized communities. The movement, led primarily by young people from working-class and minority backgrounds, is demanding not just climate action but systemic change that addresses environmental racism and economic inequality. Recent campaigns have successfully blocked several environmentally harmful projects in low-income areas and established community-owned renewable energy initiatives.
+        </article>
+    </div>
+    
+    <!-- Twitter/X Simulation -->
+    <div class="test-section twitter">
+        <h2>Twitter/X-style Content</h2>
+        <div data-testid="User-Name">@CommunityOrganizer</div>
+        <div data-testid="tweetText">
+            THREAD: Why community land trusts are essential for housing justice 🧵
+            
+            1/ Private property speculation has made housing a commodity rather than a human right. Community land trusts offer a way to permanently remove land from speculation while keeping homes affordable for working families.
+        </div>
+    </div>
+    
+    <script>
+        console.log('News platform simulation loaded - ready for extension testing');
+        
+        // Simulate different platforms based on hash
+        const hash = window.location.hash;
+        if (hash === '#guardian') {
+            document.body.className = 'guardian-site';
+        } else if (hash === '#bbc') {
+            document.body.className = 'bbc-site';
+        } else if (hash === '#independent') {
+            document.body.className = 'independent-site';
+        }
+    </script>
+</body>
+</html>
