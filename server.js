@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { createClient } = require('@supabase/supabase-js');
+const twitterService = require('./twitterService');
 
 // Only load .env in development
 if (process.env.NODE_ENV !== 'production') {
@@ -152,10 +153,19 @@ app.post('/api/articles', async (req, res) => {
 
     if (error) throw error;
 
+    const createdArticle = data[0];
+
+    // Post to Twitter if article is published
+    if (published) {
+      twitterService.postArticle(createdArticle).catch(err => {
+        console.error('Twitter posting failed (non-blocking):', err.message);
+      });
+    }
+
     res.json({
       success: true,
       message: 'Article created successfully',
-      data: data[0]
+      data: createdArticle
     });
   } catch (error) {
     console.error('Error creating article:', error);
