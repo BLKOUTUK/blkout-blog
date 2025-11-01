@@ -9,13 +9,15 @@
 
 ## 🚀 Deploy to Railway
 
-### Step 1: Get Twitter API Credentials
+### Step 1: Twitter API Credentials
 
-1. Go to [https://developer.twitter.com/en/portal/dashboard](https://developer.twitter.com/en/portal/dashboard)
-2. Create a new project or use existing one
-3. Create an app within the project
-4. Go to "Keys and tokens" tab
-5. Generate **Bearer Token** (you'll need this!)
+You already have your Twitter OAuth 1.0a API credentials:
+- API Key (Consumer Key)
+- API Secret (Consumer Secret)
+- Access Token
+- Access Token Secret
+
+These credentials are used to authenticate with Twitter API v2.
 
 ### Step 2: Add Environment Variables to Railway
 
@@ -27,7 +29,10 @@
 
 ```
 TWITTER_ENABLED=true
-TWITTER_BEARER_TOKEN=your_bearer_token_here
+TWITTER_API_KEY=your_api_key_here
+TWITTER_API_SECRET=your_api_secret_here
+TWITTER_ACCESS_TOKEN=your_access_token_here
+TWITTER_ACCESS_TOKEN_SECRET=your_access_token_secret_here
 WEBSITE_URL=https://blkoutuk.com
 ```
 
@@ -106,16 +111,17 @@ TWITTER_ENABLED=false  # Disables Twitter posting
 ## 🛡️ Security
 
 - Never commit `.env` file
-- Twitter Bearer Token is sensitive - keep it secure
-- Rotate tokens regularly
-- Use different tokens for dev/production
+- Twitter OAuth credentials are sensitive - keep them secure
+- Rotate tokens regularly if compromised
+- Use different credentials for dev/production environments
 
 ## 📊 Monitoring
 
 Watch Railway logs for:
 - Successful posts: `✅ Posted to Twitter`
 - Failures: `❌ Twitter posting failed`
-- Configuration issues: `Twitter Bearer Token not configured`
+- Configuration issues: `Twitter API credentials not configured`
+- Authentication method: `Using OAuth 1.0a authentication`
 
 ## 🎉 That's It!
 
