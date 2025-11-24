@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BLKOUT VOICES - Liberation Blog</title>
+  <!-- Marked.js for Markdown support -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -407,7 +409,7 @@
       height: 240px;
       background: linear-gradient(135deg, #6b21a8 0%, #000000 100%);
       background-size: cover;
-      background-position: center;
+      background-position: top;
       position: relative;
     }
 
@@ -539,11 +541,91 @@
       color: #e5e5e5;
       font-size: 1.125rem;
       line-height: 1.9;
-      white-space: pre-wrap;
     }
 
     .article-view-content p {
       margin-bottom: 1.5rem;
+    }
+
+    .article-view-content h1,
+    .article-view-content h2,
+    .article-view-content h3,
+    .article-view-content h4,
+    .article-view-content h5,
+    .article-view-content h6 {
+      color: #ffd700;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .article-view-content h2 {
+      font-size: 2rem;
+    }
+
+    .article-view-content h3 {
+      font-size: 1.5rem;
+    }
+
+    .article-view-content strong {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .article-view-content em {
+      font-style: italic;
+      color: rgba(229, 229, 229, 0.9);
+    }
+
+    .article-view-content a {
+      color: #ffd700;
+      text-decoration: underline;
+      transition: color 0.3s;
+    }
+
+    .article-view-content a:hover {
+      color: #ffed4e;
+    }
+
+    .article-view-content ul,
+    .article-view-content ol {
+      margin: 1.5rem 0;
+      padding-left: 2rem;
+    }
+
+    .article-view-content li {
+      margin-bottom: 0.75rem;
+    }
+
+    .article-view-content blockquote {
+      border-left: 4px solid #ffd700;
+      padding-left: 1.5rem;
+      margin: 2rem 0;
+      font-style: italic;
+      color: rgba(229, 229, 229, 0.8);
+    }
+
+    .article-view-content code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+
+    .article-view-content pre {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    .article-view-content pre code {
+      background: none;
+      padding: 0;
     }
 
     /* Social Share Buttons */
@@ -1146,6 +1228,11 @@
       return `url('${imageUrl}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%)`;
     }
 
+    // Get background style with top positioning
+    function getBackgroundStyle(category, index = 0) {
+      return `background: ${getCategoryImage(category, index)}; background-size: cover; background-position: top;`;
+    }
+
     // Generate fallback gradient for article images
     function getArticleGradient(index) {
       const gradients = [
@@ -1213,8 +1300,21 @@
             </div>
 
             <div class="form-group">
-              <label for="content">Content *</label>
-              <textarea id="content" required placeholder="Write your article content here..."></textarea>
+              <label for="content">Content * (Markdown supported)</label>
+              <textarea id="content" required placeholder="Write your article content here using markdown...
+
+**Bold text**
+*Italic text*
+## Subheading
+### Sub-subheading
+
+- List item
+- Another item
+
+[Link text](https://example.com)"></textarea>
+              <small style="color: rgba(229, 229, 229, 0.6); font-size: 0.875rem; margin-top: 0.5rem; display: block;">
+                ✨ Markdown is supported! Use **bold**, *italics*, ## headings, and more.
+              </small>
             </div>
 
             <div class="form-group">
@@ -1234,7 +1334,7 @@
 
       return `
         <div class="featured-hero" onclick="viewArticle('${article.slug}')">
-          <div class="featured-hero-bg" style="background: ${getCategoryImage(article.category, index)}; background-size: cover; background-position: center;"></div>
+          <div class="featured-hero-bg" style="${getBackgroundStyle(article.category, index)}"></div>
           <div class="featured-hero-content">
             <span class="featured-badge">
               ⭐ Featured • ${article.category.toUpperCase()}
@@ -1295,7 +1395,7 @@
           <div class="articles-grid">
             ${otherArticles.map((article, index) => `
               <div class="article-card" onclick="viewArticle('${article.slug}')">
-                <div class="article-card-image" style="background: ${getCategoryImage(article.category, index)}; background-size: cover; background-position: center;">
+                <div class="article-card-image" style="${getBackgroundStyle(article.category, index)}">
                   <span class="article-card-badge">${article.category}</span>
                 </div>
                 <div class="article-card-content">
@@ -1336,7 +1436,7 @@
               <h1>${article.title}</h1>
               <p class="article-view-author">By ${article.author}</p>
             </div>
-            <div class="article-view-content">${article.content}</div>
+            <div class="article-view-content">${marked.parse(article.content)}</div>
 
             <div class="article-share">
               <h3>Share This Article</h3>
