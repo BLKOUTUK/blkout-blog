@@ -1322,7 +1322,10 @@
     }
 
     // Get background style with top positioning
-    function getBackgroundStyle(category, index = 0) {
+    function getBackgroundStyle(category, index = 0, heroImage = null) {
+      if (heroImage) {
+        return `background: url('${heroImage}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%); background-size: cover; background-position: top;`;
+      }
       return `background: ${getCategoryImage(category, index)}; background-size: cover; background-position: top;`;
     }
 
@@ -1427,7 +1430,7 @@
 
       return `
         <div class="featured-hero" onclick="viewArticle('${article.slug}')">
-          <div class="featured-hero-bg" style="${getBackgroundStyle(article.category, index)}"></div>
+          <div class="featured-hero-bg" style="${getBackgroundStyle(article.category, index, article.hero_image)}"></div>
           <div class="featured-hero-content">
             <span class="featured-badge">
               ⭐ Featured • ${article.category.toUpperCase()}
@@ -1488,7 +1491,7 @@
           <div class="articles-grid">
             ${otherArticles.map((article, index) => `
               <div class="article-card" onclick="viewArticle('${article.slug}')">
-                <div class="article-card-image" style="${getBackgroundStyle(article.category, index)}">
+                <div class="article-card-image" style="${getBackgroundStyle(article.category, index, article.hero_image)}">
                   <span class="article-card-badge">${article.category}</span>
                 </div>
                 <div class="article-card-content">
