@@ -1366,16 +1366,22 @@
 
     // Get category-based image with fallback gradient
     function getCategoryImage(category, index = 0) {
-      const images = categoryImages[category] || categoryImages['community'];
+      // Normalize category to lowercase for matching
+      const normalizedCategory = (category || 'community').toLowerCase();
+      const images = categoryImages[normalizedCategory] || categoryImages['community'];
       const imageUrl = images[index % images.length];
+      console.log('getCategoryImage:', { category, normalizedCategory, index, imageUrl });
       return `url('${imageUrl}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%)`;
     }
 
     // Get background style with center positioning (faces centered)
     function getBackgroundStyle(category, index = 0, heroImage = null) {
-      if (heroImage) {
+      // Only use heroImage if it's a non-empty string
+      if (heroImage && typeof heroImage === 'string' && heroImage.trim() !== '') {
+        console.log('Using hero_image:', heroImage);
         return `background: url('${heroImage}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%); background-size: cover; background-position: center;`;
       }
+      console.log('Using fallback for category:', category);
       return `background: ${getCategoryImage(category, index)}; background-size: cover; background-position: center;`;
     }
 
