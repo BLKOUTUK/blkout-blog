@@ -259,6 +259,7 @@
       justify-content: flex-end;
       padding: 3rem;
       max-width: 1000px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 50%, transparent 100%);
     }
 
     .featured-badge {
@@ -409,8 +410,16 @@
       height: 240px;
       background: linear-gradient(135deg, #6b21a8 0%, #000000 100%);
       background-size: cover;
-      background-position: top;
+      background-position: center;
       position: relative;
+    }
+
+    .article-card-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, transparent 40%, transparent 60%, rgba(0, 0, 0, 0.5) 100%);
+      pointer-events: none;
     }
 
     .article-card-badge {
@@ -418,7 +427,7 @@
       top: 1rem;
       left: 1rem;
       padding: 0.5rem 1rem;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       border: 1px solid rgba(255, 215, 0, 0.5);
       border-radius: 999px;
       font-size: 0.75rem;
@@ -426,6 +435,7 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       color: #ffd700;
+      z-index: 1;
     }
 
     .article-card-content {
@@ -433,6 +443,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      background: rgba(0, 0, 0, 0.85);
     }
 
     .article-card-title {
@@ -632,7 +643,21 @@
       max-width: 50%;
       height: auto;
       border-radius: 8px;
-      margin: 1.5rem 0;
+      margin: 1rem 1.5rem 1rem 0;
+      float: left;
+      clear: left;
+    }
+
+    .article-view-content img:nth-of-type(even) {
+      float: right;
+      margin: 1rem 0 1rem 1.5rem;
+      clear: right;
+    }
+
+    .article-view-content p::after {
+      content: "";
+      display: table;
+      clear: both;
     }
 
     /* Social Share Buttons */
@@ -1298,26 +1323,44 @@
       setTimeout(() => alert.remove(), 5000);
     }
 
-    // Category-based image mapping
+    // Category-based image mapping - expanded pool for variety
     const categoryImages = {
       'editorial': [
         '/fallback-images/red images/tumblr_19cdf90e403a0faab7bf83cf434dabdf_49f4609e_640.jpg',
-        '/fallback-images/red images/tumblr_5d9a2ccc0fa2a56133c0501cacc46adf_6a189059_1280.jpg'
+        '/fallback-images/red images/tumblr_5d9a2ccc0fa2a56133c0501cacc46adf_6a189059_1280.jpg',
+        '/fallback-images/red images/tumblr_9283a51e59c87de5b9d9be6940a1d052_01e405d8_1280.jpg',
+        '/fallback-images/red images/tumblr_ba4450bc68a5145f8a93b0e3390448de_8c6b8aa4_1280.jpg',
+        '/fallback-images/red images/tumblr_c8cb29f11a02501b814b07c0e613dd96_93525cdb_2048.jpg',
+        '/fallback-images/red images/tumblr_b4286b022d4b18f043bc9459b3a2e753_3592d9b5_1280.jpg'
       ],
       'community': [
         '/fallback-images/gold images/tumblr_0426429a4a43a64e644ffaea906af64f_965dcf96_1280.jpg',
         '/fallback-images/gold images/tumblr_13e9c17df1839c98ff6ac1e1d597d85e_450a48de_1280.jpg',
-        '/fallback-images/gold images/tumblr_1a0f924dc738fc40cef878489094f2d4_8441c000_1280.jpg'
+        '/fallback-images/gold images/tumblr_1a0f924dc738fc40cef878489094f2d4_8441c000_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/facecard.png',
+        '/fallback-images/blkoutuk.com v3/tumblr_7ed756b88a0eb5851bfca7cfa2f3aca9_8769f3f0_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/tumblr_a8ff21cfe9302e86a3d03892c864c5a5_391b148a_1280.jpg'
       ],
       'liberation': [
         '/fallback-images/blue images/blue man.jpg',
-        '/fallback-images/blue images/tumblr_16174aad10948dae01218ba8e82dd990_1ec97cae_1280.jpg'
+        '/fallback-images/blue images/tumblr_16174aad10948dae01218ba8e82dd990_1ec97cae_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/seat with baldwin.png',
+        '/fallback-images/blkoutuk.com v3/John Henry.png',
+        '/fallback-images/blkoutuk.com v3/ancientlove.png',
+        '/fallback-images/blkoutuk.com v3/capacity.png'
       ],
       'analysis': [
-        '/fallback-images/green images/tumblr_5b1b6534f4a738ceb37e212fb4433518_cf767bfe_1280.jpg'
+        '/fallback-images/green images/tumblr_5b1b6534f4a738ceb37e212fb4433518_cf767bfe_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/tumblr_b36867ede4560f83007b9b3947fca29e_98a985b6_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/tumblr_99a57659866ec6d169e85dcbc9b41b36_e0aee5d9_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/tumblr_9ccd25b3f9683386cc83b53fc27d1a39_a09d5048_1280.jpg'
       ],
       'opinion': [
-        '/fallback-images/gold images/tumblr_0426429a4a43a64e644ffaea906af64f_965dcf96_1280.jpg'
+        '/fallback-images/blkoutuk.com v3/tumblr_fdf8dcd9bc9f5098aff6bcdf07243f0e_867b1e45_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/tumblr_0251cea1cc5fd09e2b0c41ffc9c1831e_237f2e44_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/tumblr_e75dcac34c703b9670a50925bea39c41_26e39db8_1280.jpg',
+        '/fallback-images/blkoutuk.com v3/sunrise.png',
+        '/fallback-images/gold images/tumblr_1a0f924dc738fc40cef878489094f2d4_8441c000_1280.jpg'
       ]
     };
 
@@ -1328,12 +1371,12 @@
       return `url('${imageUrl}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%)`;
     }
 
-    // Get background style with top positioning
+    // Get background style with center positioning (faces centered)
     function getBackgroundStyle(category, index = 0, heroImage = null) {
       if (heroImage) {
-        return `background: url('${heroImage}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%); background-size: cover; background-position: top;`;
+        return `background: url('${heroImage}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%); background-size: cover; background-position: center;`;
       }
-      return `background: ${getCategoryImage(category, index)}; background-size: cover; background-position: top;`;
+      return `background: ${getCategoryImage(category, index)}; background-size: cover; background-position: center;`;
     }
 
     // Generate fallback gradient for article images
