@@ -1376,12 +1376,20 @@
 
     // Get background style with center positioning (faces centered)
     function getBackgroundStyle(category, index = 0, heroImage = null) {
-      // Only use heroImage if it's a non-empty string
-      if (heroImage && typeof heroImage === 'string' && heroImage.trim() !== '') {
+      // Only use heroImage if it's a valid non-empty URL string
+      // Reject: null, undefined, empty string, "null", "undefined", objects, non-http(s) URLs
+      const isValidHeroImage = heroImage &&
+        typeof heroImage === 'string' &&
+        heroImage.trim() !== '' &&
+        heroImage.trim().toLowerCase() !== 'null' &&
+        heroImage.trim().toLowerCase() !== 'undefined' &&
+        (heroImage.startsWith('http') || heroImage.startsWith('/'));
+
+      if (isValidHeroImage) {
         console.log('Using hero_image:', heroImage);
         return `background: url('${heroImage}'), linear-gradient(135deg, #6b21a8 0%, #000000 100%); background-size: cover; background-position: center;`;
       }
-      console.log('Using fallback for category:', category);
+      console.log('Using fallback for category:', category, 'index:', index, 'rejected heroImage:', heroImage);
       return `background: ${getCategoryImage(category, index)}; background-size: cover; background-position: center;`;
     }
 
@@ -1484,21 +1492,32 @@
     function renderFeaturedHero(article, index) {
       if (!article) return '';
 
+      // Defensive: ensure article object has expected properties
+      const safeCategory = (article.category || 'community').toLowerCase();
+      const safeSlug = article.slug || article.id || 'featured';
+      const safeTitle = article.title || 'Featured Article';
+      const safeExcerpt = article.excerpt || (article.content ? article.content.substring(0, 200) + '...' : '');
+      const safeAuthor = article.author || 'BLKOUT';
+      const safeDate = article.published_at
+        ? new Date(article.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+        : '';
+      const bgStyle = getBackgroundStyle(safeCategory, index, article.hero_image);
+
       return `
-        <div class="featured-hero" onclick="viewArticle('${article.slug}')">
-          <div class="featured-hero-bg" style="${getBackgroundStyle(article.category, index, article.hero_image)}"></div>
+        <div class="featured-hero" onclick="viewArticle('${safeSlug}')">
+          <div class="featured-hero-bg" style="${bgStyle}"></div>
           <div class="featured-hero-content">
             <span class="featured-badge">
-              ⭐ Featured • ${article.category.toUpperCase()}
+              ⭐ Featured • ${safeCategory.toUpperCase()}
             </span>
-            <h2>${article.title}</h2>
-            <p class="featured-hero-excerpt">${article.excerpt || article.content.substring(0, 200) + '...'}</p>
+            <h2>${safeTitle}</h2>
+            <p class="featured-hero-excerpt">${safeExcerpt}</p>
             <div class="featured-hero-meta">
-              <span>By ${article.author}</span>
+              <span>By ${safeAuthor}</span>
               <span>•</span>
-              <span>${new Date(article.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              <span>${safeDate}</span>
             </div>
-            <button class="read-article-btn" onclick="event.stopPropagation(); viewArticle('${article.slug}')">
+            <button class="read-article-btn" onclick="event.stopPropagation(); viewArticle('${safeSlug}')">
               Read Article →
             </button>
           </div>
@@ -1545,21 +1564,32 @@
           </div>
 
           <div class="articles-grid">
-            ${otherArticles.map((article, index) => `
-              <div class="article-card" onclick="viewArticle('${article.slug}')">
-                <div class="article-card-image" style="${getBackgroundStyle(article.category, index, article.hero_image)}">
-                  <span class="article-card-badge">${article.category}</span>
+            ${otherArticles.map((article, index) => {
+              // Defensive: ensure article object has expected properties
+              const safeCategory = (article.category || 'community').toLowerCase();
+              const safeSlug = article.slug || article.id || index;
+              const bgStyle = getBackgroundStyle(safeCategory, index, article.hero_image);
+              const safeTitle = article.title || 'Untitled';
+              const safeExcerpt = article.excerpt || (article.content ? article.content.substring(0, 150) + '...' : '');
+              const safeAuthor = article.author || 'BLKOUT';
+              const safeDate = article.published_at ? new Date(article.published_at).toLocaleDateString() : '';
+              console.log(`Article ${index}: ${safeTitle}, category: ${safeCategory}, hasHeroImage: ${!!article.hero_image}`);
+              return `
+              <div class="article-card" onclick="viewArticle('${safeSlug}')">
+                <div class="article-card-image" style="${bgStyle}">
+                  <span class="article-card-badge">${safeCategory}</span>
                 </div>
                 <div class="article-card-content">
-                  <h3 class="article-card-title">${article.title}</h3>
-                  <p class="article-card-excerpt">${article.excerpt || article.content.substring(0, 150) + '...'}</p>
+                  <h3 class="article-card-title">${safeTitle}</h3>
+                  <p class="article-card-excerpt">${safeExcerpt}</p>
                   <div class="article-card-meta">
-                    <span class="article-card-author">${article.author}</span>
-                    <span>${new Date(article.published_at).toLocaleDateString()}</span>
+                    <span class="article-card-author">${safeAuthor}</span>
+                    <span>${safeDate}</span>
                   </div>
                 </div>
               </div>
-            `).join('')}
+            `;
+            }).join('')}
           </div>
         </div>
       `;
