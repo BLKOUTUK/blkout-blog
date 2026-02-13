@@ -342,6 +342,64 @@ app.put('/api/pitches/:id', async (req, res) => {
   }
 });
 
+// RSS Feed
+app.get('/feed', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('voices_articles')
+      .select('title, slug, excerpt, content, author, category, published_at, hero_image')
+      .eq('published', true)
+      .order('published_at', { ascending: false })
+      .limit(20);
+
+    if (error) throw error;
+
+    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.cloud';
+    const items = (data || []).map(article => {
+      const pubDate = new Date(article.published_at).toUTCString();
+      const link = `${siteUrl}/article/${article.slug}`;
+      const description = article.excerpt || article.content.substring(0, 300) + '...';
+      const imageTag = article.hero_image
+        ? `<enclosure url="${article.hero_image}" type="image/jpeg" />`
+        : '';
+      return `    <item>
+      <title><![CDATA[${article.title}]]></title>
+      <link>${link}</link>
+      <guid isPermaLink="true">${link}</guid>
+      <description><![CDATA[${description}]]></description>
+      <author>${article.author}</author>
+      <category>${article.category}</category>
+      <pubDate>${pubDate}</pubDate>
+      ${imageTag}
+    </item>`;
+    }).join('\n');
+
+    const feed = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/1999/xhtml">
+  <channel>
+    <title>BLKOUT Voices</title>
+    <link>${siteUrl}</link>
+    <description>Liberation narratives, views, perspectives and new writing from our community.</description>
+    <language>en-gb</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <atom:link href="${siteUrl}/feed" rel="self" type="application/rss+xml" />
+${items}
+  </channel>
+</rss>`;
+
+    res.set('Content-Type', 'application/rss+xml; charset=utf-8');
+    res.send(feed);
+  } catch (error) {
+    console.error('Error generating RSS feed:', error);
+    res.status(500).send('Error generating feed');
+  }
+});
+
+// Alias common feed paths
+app.get('/rss', (req, res) => res.redirect(301, '/feed'));
+app.get('/rss.xml', (req, res) => res.redirect(301, '/feed'));
+app.get('/feed.xml', (req, res) => res.redirect(301, '/feed'));
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
