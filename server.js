@@ -57,7 +57,95 @@ app.get('/api/articles', async (req, res) => {
   }
 });
 
-// Get single article by slug
+// Serve article HTML with OpenGraph meta tags for social sharing (Twitter, LinkedIn, Facebook)
+// This route serves an HTML page when crawlers or browsers request /articles/:slug
+app.get('/articles/:slug', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('voices_articles')
+      .select('*')
+      .eq('slug', req.params.slug)
+      .eq('published', true)
+      .single();
+
+    if (error || !data) {
+      return res.redirect('/');
+    }
+
+    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.cloud';
+    const title = data.title || 'BLKOUT Voices';
+    const description = (data.excerpt || data.content?.substring(0, 200) || '').replace(/[<>"]/g, '');
+    const image = data.hero_image || `${siteUrl}/blkoutlogo-white-transparent.png`;
+    const author = data.author || 'BLKOUT UK';
+    const url = `${siteUrl}/articles/${data.slug}`;
+
+    res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title} | BLKOUT Voices</title>
+<meta name="description" content="${description}">
+<meta name="author" content="${author}">
+
+<!-- OpenGraph -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${description}">
+<meta property="og:image" content="${image}">
+<meta property="og:url" content="${url}">
+<meta property="og:site_name" content="BLKOUT Voices">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@BlkOutUK">
+<meta name="twitter:title" content="${title}">
+<meta name="twitter:description" content="${description}">
+<meta name="twitter:image" content="${image}">
+
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; margin: 0; padding: 0; line-height: 1.8; }
+  .header { background: #000; border-bottom: 3px solid #FFD700; padding: 20px; text-align: center; }
+  .header img { height: 50px; }
+  .header a { color: #FFD700; text-decoration: none; font-size: 14px; }
+  .hero-image { width: 100%; max-height: 400px; object-fit: cover; display: block; }
+  .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+  h1 { font-size: 36px; line-height: 1.2; color: #fff; margin-bottom: 10px; }
+  .meta { color: #999; font-size: 14px; margin-bottom: 30px; }
+  .content { font-size: 17px; line-height: 1.9; color: #ccc; }
+  .content h2 { color: #FFD700; margin-top: 40px; }
+  .content a { color: #FFD700; }
+  .content strong { color: #fff; }
+  .content blockquote, .content .pull-quote { border-left: 3px solid #FFD700; padding-left: 20px; margin: 30px 0; color: #fff; font-size: 19px; }
+  .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 40px; }
+  .footer a { color: #FFD700; text-decoration: none; }
+  .footer p { color: #666; font-size: 13px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <a href="https://blkoutuk.com"><img src="https://comms.blkoutuk.cloud/images/blkoutlogo_wht_transparent.png" alt="BLKOUT"></a>
+    <div style="margin-top:8px;"><a href="${siteUrl}">BLKOUT Voices</a></div>
+  </div>
+  ${data.hero_image ? `<img class="hero-image" src="${data.hero_image}" alt="${data.hero_image_alt || title}">` : ''}
+  <div class="container">
+    <h1>${title}</h1>
+    <div class="meta">By ${author} · ${data.published_at ? new Date(data.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}</div>
+    <div class="content">${(data.content || '').replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>').replace(/^/, '<p>').replace(/$/, '</p>').replace(/## (.*?)(<br>|<\/p>)/g, '</p><h2>$1</h2><p>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')}</div>
+  </div>
+  <div class="footer">
+    <a href="https://blkoutuk.com">blkoutuk.com</a>
+    <p>BLKOUT Creative Ltd · Community Benefit Society RS008088</p>
+  </div>
+</body>
+</html>`);
+  } catch (error) {
+    console.error('Error serving article HTML:', error);
+    res.redirect('/');
+  }
+});
+
+// Get single article by slug (JSON API)
 app.get('/api/articles/:slug', async (req, res) => {
   try {
     const { data, error } = await supabase
