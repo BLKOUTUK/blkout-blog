@@ -1619,6 +1619,7 @@
               <h1>${article.title}</h1>
               <p class="article-view-author">By ${article.author}</p>
             </div>
+            ${article.excerpt ? `<div class="standfirst" style="font-size:20px;line-height:1.6;color:#fff;border-left:3px solid #FFD700;padding-left:20px;margin-bottom:30px;">${article.excerpt}</div>` : ''}
             <div class="article-view-content">${marked.parse(article.content)}</div>
 
             <div class="article-share">

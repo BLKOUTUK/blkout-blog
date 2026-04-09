@@ -117,6 +117,10 @@ app.get('/articles/:slug', async (req, res) => {
   .content a { color: #FFD700; }
   .content strong { color: #fff; }
   .content blockquote, .content .pull-quote { border-left: 3px solid #FFD700; padding-left: 20px; margin: 30px 0; color: #fff; font-size: 19px; }
+  .standfirst { font-size: 20px; line-height: 1.6; color: #fff; border-left: 3px solid #FFD700; padding-left: 20px; margin-bottom: 30px; }
+  .content em { font-style: italic; color: #aaa; }
+  .content ul { padding-left: 20px; }
+  .content li { margin-bottom: 8px; }
   .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 40px; }
   .footer a { color: #FFD700; text-decoration: none; }
   .footer p { color: #666; font-size: 13px; }
@@ -131,7 +135,18 @@ app.get('/articles/:slug', async (req, res) => {
   <div class="container">
     <h1>${title}</h1>
     <div class="meta">By ${author} · ${data.published_at ? new Date(data.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}</div>
-    <div class="content">${(data.content || '').replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>').replace(/^/, '<p>').replace(/$/, '</p>').replace(/## (.*?)(<br>|<\/p>)/g, '</p><h2>$1</h2><p>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')}</div>
+    ${data.excerpt ? `<div class="standfirst">${data.excerpt}</div>` : ''}
+    <div class="content">${(data.content || '')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>')
+      .replace(/## (.*?)(<br>|<\/p>)/g, '</p><h2>$1</h2><p>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      .replace(/<br>\* (.*?)(?=<br>|<\/p>)/g, '</p><ul><li>$1</li></ul><p>')
+    }</div>
   </div>
   <div class="footer">
     <a href="https://blkoutuk.com">blkoutuk.com</a>
