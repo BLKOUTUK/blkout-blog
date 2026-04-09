@@ -1602,7 +1602,7 @@
       const { data: article } = await response.json();
       currentArticle = article;
 
-      const articleUrl = encodeURIComponent(`${window.location.origin}/#${article.slug}`);
+      const articleUrl = encodeURIComponent(`${window.location.origin}/articles/${article.slug}`);
       const articleTitle = encodeURIComponent(article.title);
       const articleExcerpt = encodeURIComponent(article.excerpt || article.content.substring(0, 150));
 
@@ -1657,7 +1657,7 @@
 
     // Copy article link to clipboard
     async function copyArticleLink(slug) {
-      const url = `${window.location.origin}/#${slug}`;
+      const url = `${window.location.origin}/articles/${slug}`;
       const btn = document.getElementById(`copy-btn-${slug}`);
 
       try {
