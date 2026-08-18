@@ -119,6 +119,9 @@ app.get('/articles/:slug', async (req, res) => {
   .content blockquote, .content .pull-quote { border-left: 3px solid #FFD700; padding-left: 20px; margin: 30px 0; color: #fff; font-size: 19px; }
   .standfirst { font-size: 20px; line-height: 1.6; color: #fff; border-left: 3px solid #FFD700; padding-left: 20px; margin-bottom: 30px; }
   .content em { font-style: italic; color: #aaa; }
+  .content figure { margin: 30px 0; }
+  .content figure img { width: 100%; height: auto; display: block; }
+  .content figcaption { color: #999; font-size: 14px; margin-top: 8px; line-height: 1.5; }
   .content ul { padding-left: 20px; }
   .content li { margin-bottom: 8px; }
   .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 40px; }
@@ -143,6 +146,7 @@ app.get('/articles/:slug', async (req, res) => {
       .replace(/$/, '</p>')
       .replace(/## (.*?)(<br>|<\/p>)/g, '</p><h2>$1</h2><p>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '</p><figure><img src="$2" alt="$1"><figcaption>$1</figcaption></figure><p>')
       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
       .replace(/_(.*?)_/g, '<em>$1</em>')
       .replace(/<br>\* (.*?)(?=<br>|<\/p>)/g, '</p><ul><li>$1</li></ul><p>')
