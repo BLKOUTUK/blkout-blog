@@ -150,7 +150,7 @@ app.get('/articles/:slug', async (req, res) => {
   </div>
   <div class="footer">
     <a href="https://blkoutuk.com">blkoutuk.com</a>
-    <p>BLKOUT Creative Ltd · Community Benefit Society RS008088</p>
+    <p>BLKOUT Creative Ltd · Community Benefit Society RS009639</p>
   </div>
 </body>
 </html>`);
