@@ -146,6 +146,7 @@ app.get('/articles/:slug', async (req, res) => {
       .replace(/$/, '</p>')
       .replace(/## (.*?)(<br>|<\/p>)/g, '</p><h2>$1</h2><p>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*<]+?)\*/g, '<em>$1</em>')
       .replace(/!\[(.*?)\]\((.*?)\)/g, '</p><figure><img src="$2" alt="$1"><figcaption>$1</figcaption></figure><p>')
       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
       .replace(/_(.*?)_/g, '<em>$1</em>')
