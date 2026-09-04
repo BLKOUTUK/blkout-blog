@@ -128,6 +128,7 @@ app.get('/articles/:slug', async (req, res) => {
   .footer a { color: #FFD700; text-decoration: none; }
   .footer p { color: #666; font-size: 13px; }
 </style>
+<script defer data-domain="voices.blkoutuk.com" src="https://analytics.blkoutuk.cloud/js/script.js"></script>
 </head>
 <body>
   <div class="header">
