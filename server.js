@@ -15,6 +15,32 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+// Home: the page is built by JavaScript, so a crawler saw no article links at all.
+// Inject the published article index into #app; the client script replaces it on load.
+// Registered before express.static so / is ours; any failure falls through to the static file.
+app.get('/', async (req, res, next) => {
+  try {
+    const { data, error } = await supabase
+      .from('voices_articles')
+      .select('title, slug, excerpt, author, published_at')
+      .eq('published', true)
+      .order('published_at', { ascending: false })
+      .limit(100);
+    if (error) throw error;
+    const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const items = (data || []).map((a) =>
+      `<li><a href="/articles/${esc(a.slug)}">${esc(a.title)}</a>${a.author ? ` <span>— ${esc(a.author)}</span>` : ''}${a.excerpt ? `<p>${esc(String(a.excerpt).slice(0, 220))}</p>` : ''}</li>`).join('\n');
+    const index = `<nav id="article-index" aria-label="Articles"><h2>Latest from BLKOUT Voices</h2><ul>${items}</ul></nav>`;
+    const html = require('fs').readFileSync(require('path').join(__dirname, 'public', 'index.html'), 'utf8');
+    if (!html.includes('<div id="app">')) throw new Error('index.html has no <div id="app"> anchor');
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    res.send(html.replace('<div id="app">', `<div id="app">${index}`));
+  } catch (error) {
+    console.error('HOME INDEX INJECTION FAILED — serving static index.html:', error);
+    next();
+  }
+});
+
 app.use(express.static('public'));
 
 // Supabase client with service role key
@@ -87,6 +113,20 @@ app.get('/articles/:slug', async (req, res) => {
 <title>${title} | BLKOUT Voices</title>
 <meta name="description" content="${description}">
 <meta name="author" content="${author}">
+<link rel="canonical" href="${url}">
+<script type="application/ld+json">${JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  image,
+  author: { '@type': author === 'BLKOUT UK' ? 'Organization' : 'Person', name: author },
+  publisher: { '@type': 'Organization', name: 'BLKOUT UK', url: 'https://blkoutuk.com' },
+  datePublished: data.published_at || undefined,
+  dateModified: data.updated_at || data.published_at || undefined,
+  mainEntityOfPage: url,
+  ...(data.category ? { articleSection: data.category } : {}),
+}).replace(/</g, '\\u003c')}</script>
 
 <!-- OpenGraph -->
 <meta property="og:type" content="article">
