@@ -72,7 +72,7 @@ app.get('/articles/:slug', async (req, res) => {
       return res.redirect('/');
     }
 
-    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.cloud';
+    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.com';
     const title = data.title || 'BLKOUT Voices';
     const description = (data.excerpt || data.content?.substring(0, 200) || '').replace(/[<>"]/g, '');
     const image = data.hero_image || `${siteUrl}/blkoutlogo-white-transparent.png`;
@@ -463,10 +463,10 @@ app.get('/feed', async (req, res) => {
 
     if (error) throw error;
 
-    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.cloud';
+    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.com';
     const items = (data || []).map(article => {
       const pubDate = new Date(article.published_at).toUTCString();
-      const link = `${siteUrl}/article/${article.slug}`;
+      const link = `${siteUrl}/articles/${article.slug}`;
       const description = article.excerpt || article.content.substring(0, 300) + '...';
       const imageTag = article.hero_image
         ? `<enclosure url="${article.hero_image}" type="image/jpeg" />`
@@ -508,6 +508,38 @@ ${items}
 app.get('/rss', (req, res) => res.redirect(301, '/feed'));
 app.get('/rss.xml', (req, res) => res.redirect(301, '/feed'));
 app.get('/feed.xml', (req, res) => res.redirect(301, '/feed'));
+
+// XML sitemap: home + every published article, generated from the same table as the feed
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('voices_articles')
+      .select('slug, published_at')
+      .eq('published', true)
+      .order('published_at', { ascending: false });
+
+    if (error) throw error;
+
+    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.com';
+    const urls = [`  <url><loc>${siteUrl}/</loc><changefreq>weekly</changefreq></url>`].concat(
+      (data || []).map(a => {
+        const lastmod = a.published_at ? `<lastmod>${new Date(a.published_at).toISOString().slice(0, 10)}</lastmod>` : '';
+        return `  <url><loc>${siteUrl}/articles/${a.slug}</loc>${lastmod}</url>`;
+      })
+    );
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join('\n')}
+</urlset>`;
+
+    res.set('Content-Type', 'application/xml; charset=utf-8');
+    res.send(xml);
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    res.status(500).send('Error generating sitemap');
+  }
+});
 
 // Health check
 app.get('/api/health', (req, res) => {
