@@ -13,6 +13,19 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
+// Canonical host (14 Sep 2026): voices.blkoutuk.cloud answers this app too. Page and feed
+// requests on the alias 301 to the canonical host; /api stays reachable on every host.
+// GET/HEAD only — a 301 would turn a POST into a GET.
+const CANONICAL_HOST = 'voices.blkoutuk.com';
+const HOST_ALIASES = new Set(['voices.blkoutuk.cloud']);
+app.use((req, res, next) => {
+  const host = String(req.headers.host || '').toLowerCase().replace(/:\d+$/, '');
+  if (HOST_ALIASES.has(host) && (req.method === 'GET' || req.method === 'HEAD') && !req.path.startsWith('/api/')) {
+    return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+  }
+  next();
+});
+
 app.use(cors());
 app.use(bodyParser.json());
 // Home: the page is built by JavaScript, so a crawler saw no article links at all.
