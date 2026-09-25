@@ -170,7 +170,8 @@ app.get('/articles/:slug', async (req, res) => {
   .content a { color: #FFD700; }
   .content strong { color: #fff; }
   .content blockquote, .content .pull-quote { border-left: 3px solid #FFD700; padding-left: 20px; margin: 30px 0; color: #fff; font-size: 19px; }
-  .standfirst { font-size: 20px; line-height: 1.6; color: #fff; border-left: 3px solid #FFD700; padding-left: 20px; margin-bottom: 30px; }
+  .standfirst { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-size: 25px; line-height: 1.5; color: #fff; border-left: 3px solid #FFD700; padding-left: 20px; margin-bottom: 36px; }
+  @media (max-width: 600px) { .standfirst { font-size: 21px; } }
   .content em { font-style: italic; color: #aaa; }
   .content figure { margin: 30px 0; }
   .content figure img { width: 100%; height: auto; display: block; }
@@ -181,6 +182,8 @@ app.get('/articles/:slug', async (req, res) => {
   .footer a { color: #FFD700; text-decoration: none; }
   .footer p { color: #666; font-size: 13px; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&display=swap" rel="stylesheet">
 <script defer data-domain="voices.blkoutuk.com" src="https://analytics.blkoutuk.cloud/js/script.js"></script>
 </head>
 <body>
@@ -205,6 +208,7 @@ app.get('/articles/:slug', async (req, res) => {
       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
       .replace(/_([^_<>"]+?)_/g, '<em>$1</em>')
       .replace(/<br>\* (.*?)(?=<br>|<\/p>)/g, '</p><ul><li>$1</li></ul><p>')
+      .replace(/<p>&gt; (.*?)<\/p>|<p>> (.*?)<\/p>/g, (m, a, b) => `<blockquote>${a || b}</blockquote>`)
     }</div>
   </div>
   <div class="footer">
