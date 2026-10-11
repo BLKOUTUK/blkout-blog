@@ -11,6 +11,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+// Shared constellation footer: a verbatim copy of packages/constellation-nav/fragment.html,
+// refreshed by that package's sync.py. Read once at startup, appended to every article page.
+const CONSTELLATION = require('fs').readFileSync(require('path').join(__dirname, 'constellation-nav.html'), 'utf8').trim();
 
 // Middleware
 // Canonical host (14 Sep 2026): voices.blkoutuk.cloud answers this app too. Page and feed
@@ -215,6 +218,7 @@ app.get('/articles/:slug', async (req, res) => {
     <a href="https://blkoutuk.com">blkoutuk.com</a>
     <p>BLKOUT Creative Ltd · Community Benefit Society RS009639</p>
   </div>
+${CONSTELLATION}
 </body>
 </html>`);
   } catch (error) {
