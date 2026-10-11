@@ -57,7 +57,9 @@ app.get('/', async (req, res, next) => {
   }
 });
 
-app.use(express.static('public'));
+// redirect:false — public/videos/ is a folder of clips; without it /videos would 301 to the folder
+// instead of reaching the Films page below.
+app.use(express.static('public', { redirect: false }));
 
 // Supabase client with service role key
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -570,6 +572,138 @@ app.get('/rss', (req, res) => res.redirect(301, '/feed'));
 app.get('/rss.xml', (req, res) => res.redirect(301, '/feed'));
 app.get('/feed.xml', (req, res) => res.redirect(301, '/feed'));
 
+// /videos — the companion films that go alongside Voices pieces, in one place (Rob, 12 Oct 2026).
+// films.json lists them (YouTube id + the article slug); add a line when a new film ships. Each film
+// loads YouTube's privacy-enhanced player only when someone presses play; until then it is a
+// thumbnail and a link, so the page is light and crawlable. VideoObject markup lists every film.
+app.get('/videos', async (req, res) => {
+  try {
+    const films = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, 'films.json'), 'utf8'));
+    const { data, error } = await supabase
+      .from('voices_articles')
+      .select('slug, title, excerpt, published_at')
+      .eq('published', true)
+      .in('slug', films.map((f) => f.article));
+    if (error) throw error;
+    const bySlug = Object.fromEntries((data || []).map((a) => [a.slug, a]));
+    const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.com';
+    const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const mins = (d) => { const m = /PT(?:(\d+)M)?(?:(\d+)S)?/.exec(d || '') || []; return `${m[1] || 0}:${String(m[2] || 0).padStart(2, '0')}`; };
+    const shown = films.filter((f) => bySlug[f.article]);
+    const cards = shown.map((f) => {
+      const a = bySlug[f.article];
+      return `<article class="film">
+    <div class="player" data-id="${esc(f.youtube)}">
+      <img src="https://i.ytimg.com/vi/${esc(f.youtube)}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
+      <button type="button" aria-label="Play the film: ${esc(a.title)}"><span>▶</span></button>
+      <span class="len">${mins(f.duration)}</span>
+    </div>
+    <h2>${esc(a.title)}</h2>
+    ${a.excerpt ? `<p>${esc(String(a.excerpt).slice(0, 220))}${String(a.excerpt).length > 220 ? '…' : ''}</p>` : ''}
+    <p class="links"><a href="/articles/${esc(a.slug)}">Read the essay →</a> · <a href="https://www.youtube.com/watch?v=${esc(f.youtube)}">Watch on YouTube</a></p>
+  </article>`;
+    }).join('\n');
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'BLKOUT Voices films',
+      itemListElement: shown.map((f, i) => {
+        const a = bySlug[f.article];
+        return {
+          '@type': 'ListItem', position: i + 1,
+          item: {
+            '@type': 'VideoObject', name: a.title,
+            description: String(a.excerpt || a.title).slice(0, 300),
+            thumbnailUrl: `https://i.ytimg.com/vi/${f.youtube}/hqdefault.jpg`,
+            uploadDate: f.uploaded, duration: f.duration,
+            embedUrl: `https://www.youtube-nocookie.com/embed/${f.youtube}`,
+            contentUrl: `https://www.youtube.com/watch?v=${f.youtube}`,
+            publisher: { '@type': 'Organization', name: 'BLKOUT UK', url: 'https://blkoutuk.com' },
+          },
+        };
+      }),
+    };
+    const description = 'Short films from BLKOUT that go alongside our essays and long reads, all in one place.';
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Films | BLKOUT Voices</title>
+<meta name="description" content="${description}">
+<link rel="canonical" href="${siteUrl}/videos">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="BLKOUT Voices">
+<meta property="og:title" content="Films | BLKOUT Voices">
+<meta property="og:description" content="${description}">
+<meta property="og:url" content="${siteUrl}/videos">
+${shown[0] ? `<meta property="og:image" content="https://i.ytimg.com/vi/${esc(shown[0].youtube)}/hqdefault.jpg">` : ''}
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
+<script defer data-domain="voices.blkoutuk.com" src="https://analytics.blkoutuk.cloud/js/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; margin: 0; line-height: 1.6; }
+  .header { background: #000; border-bottom: 3px solid #FFD700; padding: 20px; text-align: center; }
+  .header img { height: 50px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px 60px; }
+  h1 { font-size: 40px; line-height: 1.1; color: #fff; margin: 0 0 8px; }
+  .standfirst { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-size: 22px; color: #fff; border-left: 3px solid #FFD700; padding-left: 18px; margin: 0 0 40px; max-width: 46ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 36px 28px; }
+  .player { position: relative; aspect-ratio: 16 / 9; background: #111; overflow: hidden; border: 1px solid #222; }
+  .player img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .player button { position: absolute; inset: 0; width: 100%; height: 100%; background: linear-gradient(transparent 55%, rgba(0,0,0,.55)); border: 0; cursor: pointer; }
+  .player button span { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 50%; background: #FFD700; color: #000; font-size: 28px; padding-left: 5px; box-shadow: 0 6px 24px rgba(0,0,0,.5); transition: transform .2s; }
+  .player button:hover span, .player button:focus-visible span { transform: scale(1.08); }
+  .player .len { position: absolute; right: 10px; bottom: 10px; background: rgba(0,0,0,.8); color: #fff; font-size: 13px; padding: 2px 8px; pointer-events: none; }
+  .film h2 { color: #fff; font-size: 22px; line-height: 1.25; margin: 16px 0 6px; }
+  .film p { color: #bbb; font-size: 15px; margin: 0 0 8px; }
+  .film .links a { color: #FFD700; text-decoration: none; font-weight: 600; }
+  .film .links a:hover { text-decoration: underline; }
+  .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; }
+  .footer a { color: #FFD700; text-decoration: none; }
+  .footer p { color: #666; font-size: 13px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <a href="/"><img src="https://comms.blkoutuk.cloud/images/blkoutlogo_wht_transparent.png" alt="BLKOUT Voices"></a>
+  </div>
+  <main class="container">
+    <h1>Films</h1>
+    <p class="standfirst">Short films that go alongside our essays. Watch here, then read the piece.</p>
+    <div class="grid">
+${cards || '<p>No films yet.</p>'}
+    </div>
+  </main>
+  <div class="footer">
+    <a href="/">BLKOUT Voices</a> · <a href="https://blkoutuk.com">blkoutuk.com</a>
+    <p>BLKOUT Creative Ltd · Community Benefit Society RS009639</p>
+  </div>
+${CONSTELLATION}
+<script>
+  document.querySelectorAll('.player').forEach(function (p) {
+    p.querySelector('button').addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + p.getAttribute('data-id') + '?autoplay=1&rel=0';
+      f.title = p.parentNode.querySelector('h2').textContent;
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen = true;
+      p.innerHTML = ''; p.appendChild(f);
+    });
+  });
+</script>
+</body>
+</html>`);
+  } catch (error) {
+    console.error('Error serving /videos:', error);
+    res.status(500).send('Films are unavailable right now.');
+  }
+});
+
 // XML sitemap: home + every published article, generated from the same table as the feed
 app.get('/sitemap.xml', async (req, res) => {
   try {
@@ -582,7 +716,7 @@ app.get('/sitemap.xml', async (req, res) => {
     if (error) throw error;
 
     const siteUrl = process.env.SITE_URL || 'https://voices.blkoutuk.com';
-    const urls = [`  <url><loc>${siteUrl}/</loc><changefreq>weekly</changefreq></url>`].concat(
+    const urls = [`  <url><loc>${siteUrl}/</loc><changefreq>weekly</changefreq></url>`, `  <url><loc>${siteUrl}/videos</loc><changefreq>monthly</changefreq></url>`].concat(
       (data || []).map(a => {
         const lastmod = a.published_at ? `<lastmod>${new Date(a.published_at).toISOString().slice(0, 10)}</lastmod>` : '';
         return `  <url><loc>${siteUrl}/articles/${a.slug}</loc>${lastmod}</url>`;
