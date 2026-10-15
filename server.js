@@ -183,6 +183,12 @@ app.get('/articles/:slug', async (req, res) => {
   .content figcaption { color: #999; font-size: 14px; margin-top: 8px; line-height: 1.5; }
   .content ul { padding-left: 20px; }
   .content li { margin-bottom: 8px; }
+  .content .player { position: relative; aspect-ratio: 16 / 9; background: #111; overflow: hidden; border: 1px solid #222; margin: 30px 0; }
+  .content .player img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .content .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .content .player button { position: absolute; inset: 0; width: 100%; height: 100%; background: linear-gradient(transparent 55%, rgba(0,0,0,.55)); border: 0; cursor: pointer; }
+  .content .player button span { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 50%; background: #FFD700; color: #000; font-size: 28px; padding-left: 5px; box-shadow: 0 6px 24px rgba(0,0,0,.5); transition: transform .2s; }
+  .content .player button:hover span, .content .player button:focus-visible span { transform: scale(1.08); }
   .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 40px; }
   .footer a { color: #FFD700; text-decoration: none; }
   .footer p { color: #666; font-size: 13px; }
@@ -201,7 +207,14 @@ app.get('/articles/:slug', async (req, res) => {
     <h1>${title}</h1>
     <div class="meta">By ${author} · ${data.published_at ? new Date(data.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}</div>
     ${data.excerpt ? `<div class="standfirst">${data.excerpt}</div>` : ''}
-    <div class="content">${(data.content || '')
+    <div class="content">${(() => {
+      // A YouTube link alone on its own line becomes a click-to-play player (same as /videos).
+      // Inline links in a sentence stay links. Placeholders keep video ids clear of the regex chain.
+      const films = [];
+      const body = (data.content || '').replace(
+        /^[ \t]*<?https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})[^\s>]*>?[ \t]*$/gm,
+        (m, id) => `%%FILM${films.push(id) - 1}%%`);
+      return body
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br>')
       .replace(/^/, '<p>')
@@ -214,13 +227,26 @@ app.get('/articles/:slug', async (req, res) => {
       .replace(/_([^_<>"]+?)_/g, '<em>$1</em>')
       .replace(/<br>\* (.*?)(?=<br>|<\/p>)/g, '</p><ul><li>$1</li></ul><p>')
       .replace(/<p>&gt; (.*?)<\/p>|<p>> (.*?)<\/p>/g, (m, a, b) => `<blockquote>${a || b}</blockquote>`)
-    }</div>
+      .replace(/(?:<p>)?%%FILM(\d+)%%(?:<\/p>)?/g, (m, i) => `<figure class="player" data-id="${films[i]}"><img src="https://i.ytimg.com/vi/${films[i]}/hqdefault.jpg" alt="" loading="lazy"><button type="button" aria-label="Play film: ${title}"><span>&#9654;</span></button></figure>`);
+    })()}</div>
   </div>
   <div class="footer">
     <a href="https://blkoutuk.com">blkoutuk.com</a>
     <p>BLKOUT Creative Ltd · Community Benefit Society RS009639</p>
   </div>
 ${CONSTELLATION}
+<script>
+  document.querySelectorAll('.content .player').forEach(function (p) {
+    p.querySelector('button').addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + p.getAttribute('data-id') + '?autoplay=1&rel=0';
+      f.title = document.querySelector('h1').textContent;
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen = true;
+      p.innerHTML = ''; p.appendChild(f);
+    });
+  });
+</script>
 </body>
 </html>`);
   } catch (error) {
