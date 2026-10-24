@@ -767,6 +767,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
+// Graceful shutdown. node runs as PID 1 in the container with no wrapper, and without a
+// SIGTERM listener it never exits, so Coolify's rolling update waits the full 30 s stop
+// grace while Traefik round-robins between the old and new containers. Same fix as comms PR #37.
+const server = app.listen(PORT, () => {
   console.log(`🏴‍☠️ BLKOUT Blog API running on port ${PORT}`);
 });
+const shutdown = (signal) => {
+  console.log(`${signal} received — closing`);
+  server.close(() => process.exit(0));
+  setTimeout(() => process.exit(0), 5000).unref();
+};
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
