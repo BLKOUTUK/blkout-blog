@@ -189,6 +189,8 @@ app.get('/articles/:slug', async (req, res) => {
   .content .player button { position: absolute; inset: 0; width: 100%; height: 100%; background: linear-gradient(transparent 55%, rgba(0,0,0,.55)); border: 0; cursor: pointer; }
   .content .player button span { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 50%; background: #FFD700; color: #000; font-size: 28px; padding-left: 5px; box-shadow: 0 6px 24px rgba(0,0,0,.5); transition: transform .2s; }
   .content .player button:hover span, .content .player button:focus-visible span { transform: scale(1.08); }
+  .author-bio { margin-top: 48px; padding-top: 24px; border-top: 1px solid #333; font-family: 'Fraunces', Georgia, serif; font-style: italic; font-size: 17px; line-height: 1.6; color: #bbb; }
+  .author-bio a { color: #FFD700; }
   .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 40px; }
   .footer a { color: #FFD700; text-decoration: none; }
   .footer p { color: #666; font-size: 13px; }
@@ -229,6 +231,9 @@ app.get('/articles/:slug', async (req, res) => {
       .replace(/<p>&gt; (.*?)<\/p>|<p>> (.*?)<\/p>/g, (m, a, b) => `<blockquote>${a || b}</blockquote>`)
       .replace(/(?:<p>)?%%FILM(\d+)%%(?:<\/p>)?/g, (m, i) => `<figure class="player" data-id="${films[i]}"><img src="https://i.ytimg.com/vi/${films[i]}/hqdefault.jpg" alt="" loading="lazy"><button type="button" aria-label="Play film: ${title}"><span>&#9654;</span></button></figure>`);
     })()}</div>
+    ${data.author_bio ? `<div class="author-bio">${String(data.author_bio)
+      .replace(/^\*+|\*+$/g, '')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')}</div>` : ''}
   </div>
   <div class="footer">
     <a href="https://blkoutuk.com">blkoutuk.com</a>
