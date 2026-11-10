@@ -29,6 +29,25 @@ app.use((req, res, next) => {
   next();
 });
 
+// Page-visit log (10 Nov 2026), same as news and events: one row per page view in
+// public.site_visits, read through metrics.site_traffic. Page, utm tags and referring domain
+// only: no IP, no user agent. Fire-and-forget; a logging failure never touches the page.
+app.use((req, _res, next) => {
+  next();
+  const url = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+  if (!url || !key || req.method !== 'GET' || req.path.startsWith('/api/') || /\.[a-z0-9]+$/i.test(req.path)) return;
+  if (!String(req.headers.accept || '').includes('text/html')) return;
+  let referrer_host = null;
+  try { referrer_host = req.headers.referer ? new URL(String(req.headers.referer)).hostname : null; } catch {}
+  const cut = (v) => (typeof v === 'string' && v ? v.slice(0, 120) : null);
+  fetch(`${url}/rest/v1/site_visits`, {
+    method: 'POST',
+    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ site: 'voices', path: req.path.slice(0, 300), utm_source: cut(req.query.utm_source), utm_medium: cut(req.query.utm_medium), utm_campaign: cut(req.query.utm_campaign), referrer_host }),
+  }).catch((e) => console.error('[visits] log failed:', e?.message || e));
+});
+
 app.use(cors());
 app.use(bodyParser.json());
 // Home: the page is built by JavaScript, so a crawler saw no article links at all.
