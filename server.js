@@ -184,6 +184,9 @@ app.get('/articles/:slug', async (req, res) => {
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; margin: 0; padding: 0; line-height: 1.8; }
   .header { background: #000; border-bottom: 3px solid #FFD700; padding: 20px; text-align: center; }
   .header img { height: 50px; }
+  .header .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+  .header a.wordmark { font-family: 'Work Sans', system-ui, sans-serif; font-weight: 900; font-size: 26px; letter-spacing: -0.04em; color: #f5f1e8; text-transform: uppercase; }
+  .header .wordmark span { color: #00a86b; }
   .header a { color: #FFD700; text-decoration: none; font-size: 14px; }
   .hero-image { width: 100%; max-height: 400px; object-fit: cover; display: block; }
   .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
@@ -215,12 +218,12 @@ app.get('/articles/:slug', async (req, res) => {
   .footer p { color: #666; font-size: 13px; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&family=Work+Sans:wght@900&display=swap" rel="stylesheet">
 <script defer data-domain="voices.blkoutuk.com" src="https://analytics.blkoutuk.cloud/js/script.js"></script>
 </head>
 <body>
   <div class="header">
-    <a href="https://blkoutuk.com"><img src="https://comms.blkoutuk.cloud/images/blkoutlogo_wht_transparent.png" alt="BLKOUT"></a>
+    <div class="brand"><a href="https://blkoutuk.com"><img src="https://comms.blkoutuk.cloud/images/blkoutlogo_wht_transparent.png" alt="BLKOUT"></a><a class="wordmark" href="https://blkoutuk.com">BLKOUT<span>.</span></a></div>
     <div style="margin-top:8px;"><a href="${siteUrl}">BLKOUT Voices</a></div>
   </div>
   ${data.hero_image ? `<img class="hero-image" src="${data.hero_image}" alt="${data.hero_image_alt || title}">` : ''}
@@ -693,11 +696,14 @@ ${shown[0] ? `<meta property="og:image" content="https://i.ytimg.com/vi/${esc(sh
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
 <script defer data-domain="voices.blkoutuk.com" src="https://analytics.blkoutuk.cloud/js/script.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&family=Work+Sans:wght@900&display=swap" rel="stylesheet">
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; margin: 0; line-height: 1.6; }
   .header { background: #000; border-bottom: 3px solid #FFD700; padding: 20px; text-align: center; }
   .header img { height: 50px; }
+  .header .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+  .header a.wordmark { font-family: 'Work Sans', system-ui, sans-serif; font-weight: 900; font-size: 26px; letter-spacing: -0.04em; color: #f5f1e8; text-transform: uppercase; }
+  .header .wordmark span { color: #00a86b; }
   .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px 60px; }
   h1 { font-size: 40px; line-height: 1.1; color: #fff; margin: 0 0 8px; }
   .standfirst { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-size: 22px; color: #fff; border-left: 3px solid #FFD700; padding-left: 18px; margin: 0 0 40px; max-width: 46ch; }
@@ -720,7 +726,7 @@ ${shown[0] ? `<meta property="og:image" content="https://i.ytimg.com/vi/${esc(sh
 </head>
 <body>
   <div class="header">
-    <a href="/"><img src="https://comms.blkoutuk.cloud/images/blkoutlogo_wht_transparent.png" alt="BLKOUT Voices"></a>
+    <div class="brand"><a href="/"><img src="https://comms.blkoutuk.cloud/images/blkoutlogo_wht_transparent.png" alt="BLKOUT Voices"></a><a class="wordmark" href="/">BLKOUT<span>.</span></a></div>
   </div>
   <main class="container">
     <h1>Films</h1>
