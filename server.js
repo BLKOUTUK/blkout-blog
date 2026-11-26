@@ -78,8 +78,6 @@ app.get('/', async (req, res, next) => {
 
 // redirect:false — public/videos/ is a folder of clips; without it /videos would 301 to the folder
 // instead of reaching the Films page below.
-// Guest interview links must work with or without the trailing slash (the browser keeps the #key across the redirect).
-app.get('/interview', (req, res) => res.redirect(302, '/interview/'));
 app.use(express.static('public', { redirect: false }));
 
 // Supabase client with service role key
